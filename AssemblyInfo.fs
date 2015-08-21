@@ -1,4 +1,4 @@
-﻿module kevoree-dotnet-node.AssemblyInfo
+﻿module Org.Kevoree.Node.AssemblyInfo
 open System.Reflection
 open System.Runtime.CompilerServices
 

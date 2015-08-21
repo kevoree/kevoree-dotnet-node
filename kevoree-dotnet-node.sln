@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{f2a71f9b-5d33-465a-a702-920d77279786}") = "kevoree-dotnet-node", "kevoree-dotnet-node.fsproj", "{E2DC8B0D-D8D9-4826-9BF8-BC9ACB972804}"
+Project("{f2a71f9b-5d33-465a-a702-920d77279786}") = "Kevoree Node", "Kevoree Node.fsproj", "{E2DC8B0D-D8D9-4826-9BF8-BC9ACB972804}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
