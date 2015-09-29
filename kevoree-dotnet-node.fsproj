@@ -5,11 +5,12 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>c22774d4-531f-4439-85d6-ccd25cd2dd90</ProjectGuid>
+    <ProjectGuid>eb0f4bea-65e6-4c2b-9a77-6f4e1ab77a23</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>kevoree_dotnet_node</RootNamespace>
-    <AssemblyName>kevoree_dotnet_node</AssemblyName>
+    <AssemblyName>Org.Kevoree.Library</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <TargetFSharpCoreVersion>4.3.1.0</TargetFSharpCoreVersion>
     <Name>kevoree-dotnet-node</Name>
   </PropertyGroup>
@@ -21,7 +22,9 @@
     <OutputPath>C:\Users\mleduc\Desktop\package_solution\org-kevoree-node\0.0.1\plugin\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DocumentationFile>bin\Debug\kevoree_dotnet_node.XML</DocumentationFile>
+    <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -30,8 +33,35 @@
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DocumentationFile>bin\Release\kevoree_dotnet_node.XML</DocumentationFile>
+    <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
+  <PropertyGroup>
+    <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>
+  </PropertyGroup>
+  <Choose>
+    <When Condition="'$(VisualStudioVersion)' == '11.0'">
+      <PropertyGroup Condition="Exists('$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.0\Framework\v4.0\Microsoft.FSharp.Targets')">
+        <FSharpTargetsPath>$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.0\Framework\v4.0\Microsoft.FSharp.Targets</FSharpTargetsPath>
+      </PropertyGroup>
+    </When>
+    <Otherwise>
+      <PropertyGroup Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\FSharp\Microsoft.FSharp.Targets')">
+        <FSharpTargetsPath>$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\FSharp\Microsoft.FSharp.Targets</FSharpTargetsPath>
+      </PropertyGroup>
+    </Otherwise>
+  </Choose>
+  <Import Project="$(FSharpTargetsPath)" />
+  <ItemGroup>
+    <None Include="App.config" />
+    <Compile Include="AdaptationType.fs" />
+    <Compile Include="AssemblyInfo.fs" />
+    <Compile Include="KevoreeKompareBean.fs" />
+    <Compile Include="KevoreeKompareBeanTest.fs" />
+    <Compile Include="Node.fs" />
+    <Content Include="packages.config" />
+  </ItemGroup>
   <ItemGroup>
     <Reference Include="IKVM.AWT.WinForms">
       <HintPath>packages\IKVM.7.2.4630.5\lib\IKVM.AWT.WinForms.dll</HintPath>
@@ -150,14 +180,6 @@
     <Reference Include="System.Numerics" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Node.fs" />
-    <Compile Include="AdaptationType.fs" />
-    <Compile Include="AssemblyInfo.fs" />
-    <None Include="packages.config" />
-    <Compile Include="KevoreeKompareBean.fs" />
-    <Compile Include="KevoreeKompareBeanTest.fs" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\kevoree-dotnet-annotation\Annotation.csproj">
       <Name>Annotation</Name>
       <Project>{ad3c2f49-5c3b-46d3-a283-600fe11a0aa1}</Project>
@@ -169,22 +191,6 @@
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>
-  <PropertyGroup>
-    <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>
-  </PropertyGroup>
-  <Choose>
-    <When Condition="'$(VisualStudioVersion)' == '11.0'">
-      <PropertyGroup Condition="Exists('$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.0\Framework\v4.0\Microsoft.FSharp.Targets')">
-        <FSharpTargetsPath>$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.0\Framework\v4.0\Microsoft.FSharp.Targets</FSharpTargetsPath>
-      </PropertyGroup>
-    </When>
-    <Otherwise>
-      <PropertyGroup Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\FSharp\Microsoft.FSharp.Targets')">
-        <FSharpTargetsPath>$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\FSharp\Microsoft.FSharp.Targets</FSharpTargetsPath>
-      </PropertyGroup>
-    </Otherwise>
-  </Choose>
-  <Import Project="$(FSharpTargetsPath)" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

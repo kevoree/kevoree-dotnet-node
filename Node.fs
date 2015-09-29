@@ -1,4 +1,4 @@
-﻿namespace Org.Kevoree.Node
+﻿namespace Org.Kevoree.Library
 
 open Org.Kevoree.Annotation
 open Org.Kevoree.Core.Api.Handler

@@ -1,4 +1,5 @@
-﻿module Org.Kevoree.Node.AssemblyInfo
+﻿namespace Org.Kevoree.Library
+
 open System.Reflection
 open System.Runtime.CompilerServices
 

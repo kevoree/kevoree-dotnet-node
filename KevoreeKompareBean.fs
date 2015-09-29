@@ -1,8 +1,9 @@
-﻿namespace Kevoree.Api
+﻿namespace Org.Kevoree.Library
 
-open org.kevoree;
-open Kevoree.Api.AdaptationType;
-open org.kevoree.modeling.api.trace;
+open org.kevoree
+open org.kevoree.modeling.api.trace
+open Org.Kevoree.Core.Api.Adaptation
+open Org.Kevoree.Library.AdaptationType
 
 module KevoreeKompareBean =  
 
@@ -154,7 +155,7 @@ module KevoreeKompareBean =
         adaptations + adt
 
 
-    let plan:ContainerRoot -> ContainerRoot -> string -> TraceSequence -> AdaptationModel = fun current target nodeName traces -> 
+    let plan:ContainerRoot -> ContainerRoot -> string -> pmodeling.api.trace.TraceSequence -> AdaptationModel = fun current target nodeName traces -> 
         // TODO : cleanup cet horreur !!!
         let afd = new System.Collections.Generic.List<ModelTrace>();
         let aa = (traces.getTraces().iterator())

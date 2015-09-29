@@ -1,10 +1,10 @@
-﻿namespace Kevoree.Api
+﻿namespace Org.Kevoree.Library
 
 module Test =
     open NUnit.Framework
-    open Kevoree.Api.KevoreeKompareBean;
-    open Kevoree.Api.AdaptationType;
     open org.kevoree.factory;
+    open Org.Kevoree.Library.AdaptationType
+    open Org.Kevoree.Library.KevoreeKompareBean
     open org.kevoree;
     open java.io;
     open org.kevoree.modeling.api.trace;

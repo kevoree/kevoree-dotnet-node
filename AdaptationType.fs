@@ -1,4 +1,4 @@
-﻿namespace Kevoree.Api
+﻿namespace Org.Kevoree.Library
 
 module AdaptationType =
 
