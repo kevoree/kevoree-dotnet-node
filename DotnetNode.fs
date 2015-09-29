@@ -6,7 +6,7 @@ open Org.Kevoree.Core.Api
 open System
 
 [<Org.Kevoree.Annotation.NodeType>]
-type Node =
+type DotnetNode =
     class
         [<KevoreeInject>] val mutable modelService:ModelService
 
@@ -27,7 +27,7 @@ type Node =
         inherit MarshalByRefObject        
     end
     
-type Node with
+type DotnetNode with
     new() = {
         modelService = null
         bootstrapService = null

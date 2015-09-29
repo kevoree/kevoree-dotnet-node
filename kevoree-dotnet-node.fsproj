@@ -59,7 +59,7 @@
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="KevoreeKompareBean.fs" />
     <Compile Include="KevoreeKompareBeanTest.fs" />
-    <Compile Include="Node.fs" />
+    <Compile Include="DotnetNode.fs" />
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
