@@ -1,53 +1,42 @@
 ﻿namespace Org.Kevoree.Library
 
 open org.kevoree
-open org.kevoree.modeling.api.trace
+open org.kevoree.pmodeling.api.trace
 open Org.Kevoree.Core.Api.Adaptation
 open Org.Kevoree.Library.AdaptationType
+open Org.Kevoree.Core.Api
+open Org.Kevoree.Core.Api.IMarshalled
 
-module KevoreeKompareBean =  
+module KevoreeKompareBean =
 
     type PlanType = ContainerRoot -> ContainerRoot -> string -> TraceSequence -> AdaptationModel
     type Context = {
         NodeName: string;
-        TargetNode: ContainerNode;
-        TargetModel: ContainerRoot;
-        CurrentNode: ContainerNode;
-        CurrentModel:ContainerRoot;
+        TargetNode: IContainerNodeMarshalled;
+        TargetModel: IContainerRootMarshalled;
+        CurrentNode: IContainerNodeMarshalled;
+        CurrentModel: IContainerRootMarshalled;
         ModelRegistry: ModelRegistry
     }
-    type TraceToAdaptation = ModelTrace -> Context -> AdaptationModel
+    type TraceToAdaptation = Org.Kevoree.Core.Api.IModelTraceMarshalled -> Context -> AdaptationModelFS
 
     let traceToAdaptationComponent: TraceToAdaptation = fun trace context -> 
         if context.TargetNode.path() = trace.getSrcPath() 
         then
-            match trace with
-            | :? ModelAddTrace -> set [ { 
-                                            Type =  AdaptationType.AddInstance; 
-                                            NodePath = context.TargetNode.path()
-                                            Ref = context.TargetModel.findByPath((trace :?>  ModelAddTrace).getPreviousPath()) } 
-                                        ]
-            | :? ModelRemoveTrace ->  
-                let removedObjetPath = (trace :?> ModelRemoveTrace).getObjPath()
-                set [ { 
-                        Type =  AdaptationType.RemoveInstance; 
-                        NodePath = removedObjetPath
-                        Ref = context.TargetModel.findByPath(removedObjetPath) };
-                        { 
-                        Type =  AdaptationType.StopInstance; 
-                        NodePath = removedObjetPath
-                        Ref = context.TargetModel.findByPath(removedObjetPath) } 
-                    ]
-            | _ -> set []
+            if trace.isOfType(typedefof<ModelAddTrace>) then set [ {  Type =  AdaptationType.AddInstance;  NodePath = context.TargetNode.path(); Ref = context.TargetModel.findByPath(trace.getModelAddTrace().getPreviousPath()) }  ]
+            elif trace.isOfType(typedefof<ModelRemoveTrace>) then
+                let removedObjetPath = trace.getModelRemoveTrace().getObjPath()
+                set [ { Type =  AdaptationType.RemoveInstance;  NodePath = removedObjetPath; Ref = context.TargetModel.findByPath(removedObjetPath) }; {  Type =  AdaptationType.StopInstance;  NodePath = removedObjetPath; Ref = context.TargetModel.findByPath(removedObjetPath) }  ]
+            else set []
         else set []
 
     // TODO : ici différent entre js et java, voir quoi faire, surement en rapport avec deployUnits
     let traceToAdaptationDeployUnit: TraceToAdaptation = fun _ _ -> set [] // failwith "TODO traceToAdaptationDeployUnit"
-    let traceToAdaptationBindings: TraceToAdaptation = fun trace context -> 
-        if not (context.TargetModel.findByPath(trace.getSrcPath()) :? Channel)
+    let traceToAdaptationBindings: TraceToAdaptation = fun trace context ->
+        if not (context.TargetModel.findByPath(trace.getSrcPath()).isOfType(typedefof<Channel>))
         then
-            let nodePath = (trace :?> ModelAddTrace).getPreviousPath()
-            let binding = context.TargetModel.findByPath(nodePath) :?> MBinding
+            let nodePath = trace.getModelAddTrace().getPreviousPath()
+            let binding = context.TargetModel.findByPath(nodePath).getMBinding()
             let channel = binding.getHub()
             
             let concatMe1 = set [ { 
@@ -71,21 +60,21 @@ module KevoreeKompareBean =
 
     let traceToAdaptationStarted: TraceToAdaptation = fun trace context ->
         let modelElement = context.TargetModel.findByPath(trace.getSrcPath())
-        if modelElement :? Instance &&  trace :? ModelSetTrace 
+        if modelElement.isOfType(typedefof<Instance>) && trace.isOfType(typedefof<ModelSetTrace>)
         then
-            if modelElement.eContainer() :? ContainerNode && not (modelElement.eContainer().path() = context.TargetNode.path())
+            if modelElement.eContainer().isOfType(typedefof<ContainerNode>) && not (modelElement.eContainer().path() = context.TargetNode.path())
             then set []
             else
                 if  trace.getSrcPath() = context.TargetNode.path()
                 then set []
                 else 
-                    if (trace :?> ModelSetTrace).getContent().ToLower() = "true"
+                    if trace.getModelSetTrace().getContent().ToLower() = "true"
                     then set [{ 
                                 Type =  AdaptationType.StartInstance;
                                 NodePath = context.TargetNode.path()
                                 Ref = modelElement }]
                     else set [{ 
-                                Type =  AdaptationType.StopInstance; 
+                                Type = AdaptationType.StopInstance; 
                                 NodePath = context.TargetNode.path()
                                 Ref = modelElement }]
         else set []
@@ -113,19 +102,19 @@ module KevoreeKompareBean =
 
     let traceToAdaptationTypeValue:TraceToAdaptation = fun trace context ->
         let modelElement = context.TargetModel.findByPath(trace.getSrcPath())
-        if modelElement :? Value && modelElement.getRefInParent() = "values"
+        if modelElement.isOfType(typedefof<Value>) && modelElement.getRefInParent() = "values"
         then 
-            let parentInstance = modelElement.eContainer().eContainer() :?> Instance
-            if parentInstance <> null 
-                && parentInstance :? ContainerNode 
+            let parentInstance = modelElement.eContainer().eContainer().getInstance()
+            if parentInstance <> null
+                && parentInstance.isOfType(typedefof<ContainerNode>)
                 && parentInstance.getName() = context.NodeName 
                 && context.CurrentNode = null
             then set []
             else 
                 let dictionaryParent = modelElement.eContainer()
-                if dictionaryParent <> null 
-                    && dictionaryParent :? FragmentDictionary 
-                    && (dictionaryParent :?> FragmentDictionary).getName() <> context.NodeName
+                if dictionaryParent <> null
+                    && dictionaryParent.isOfType(typedefof<FragmentDictionary>)
+                    && dictionaryParent.getFragmentDictionary().getName() <> context.NodeName
                 then set []
                 else 
                     let set1 = set [{
@@ -140,7 +129,7 @@ module KevoreeKompareBean =
                     set1 + set2
         else  set []
 
-    let traceToAdaptation : Context -> (AdaptationModel -> ModelTrace -> AdaptationModel) = fun context adaptations trace ->
+    let traceToAdaptation : Context -> (AdaptationModelFS -> Org.Kevoree.Core.Api.IModelTraceMarshalled -> AdaptationModelFS) = fun context adaptations trace ->
         let adt = match (trace.getRefName()) with
                     | "groups" ->  traceToAdaptationComponent trace context
                     | "hosts" -> traceToAdaptationComponent trace context
@@ -154,17 +143,22 @@ module KevoreeKompareBean =
         
         adaptations + adt
 
+    let convertAdapt:AdaptationFS -> AdaptationPrimitive = fun adaptationFS ->
+        let ret = new AdaptationPrimitive()
+        ret.setType(adaptationFS.Type)
+        ret.setNodePath(adaptationFS.NodePath)
+        ret.setRef(adaptationFS.Type)
+        ret
 
-    let plan:ContainerRoot -> ContainerRoot -> string -> pmodeling.api.trace.TraceSequence -> AdaptationModel = fun current target nodeName traces -> 
-        // TODO : cleanup cet horreur !!!
-        let afd = new System.Collections.Generic.List<ModelTrace>();
-        let aa = (traces.getTraces().iterator())
-        while (aa.hasNext()) do
-            let tmp = (aa.next())
-            afd.Add(tmp :?> ModelTrace)
+    let convert:AdaptationModelFS -> Org.Kevoree.Core.Api.Adaptation.AdaptationModel = fun adaptationModelfs ->
+        let am = new AdaptationModel();
+        for elem in adaptationModelfs do
+            am.Add(convertAdapt elem)
+        am
 
-        let asdf:list<ModelTrace> = afd.ToArray() |> Array.toList
-        
+
+    let plan:IContainerRootMarshalled -> IContainerRootMarshalled -> string -> Org.Kevoree.Core.Api.ITracesSequence -> Org.Kevoree.Core.Api.Adaptation.AdaptationModel = fun current target nodeName traces ->         
+        let asdf = traces.GetTraces() |> List.ofSeq;
         let context = {
             NodeName = nodeName;
             TargetNode = target.findNodesByID(nodeName);
@@ -172,4 +166,4 @@ module KevoreeKompareBean =
             CurrentNode = current.findNodesByID(nodeName);
             CurrentModel = current;
             ModelRegistry = Map.empty }
-        List.fold (traceToAdaptation context) Set.empty asdf
+        convert (List.fold (traceToAdaptation context) Set.empty asdf)

@@ -3,7 +3,7 @@
 module AdaptationType =
 
     ///[<System.FlagsAttribute>]
-    type AdaptationType =
+    (*type AdaptationTypeFS =
         | AddDeployUnit = 1
         | RemoveDeployUnit = 2
         | UpdateInstance =3
@@ -17,25 +17,25 @@ module AdaptationType =
         | StopInstance = 11
         | LinkDeployUnit = 12
         | UpdateCallMethod = 13
-        | UpgradeInstance = 14
+        | UpgradeInstance = 14*)
 
     [<StructuredFormatDisplay("Adaptation({Type}, {PrimitiveType}, {Ref})"); CustomEquality; CustomComparison>]
-    type Adaptation  =
-        {   Type: AdaptationType;
-            NodePath: string
+    type AdaptationFS  =
+        {   Type: Org.Kevoree.Core.Api.AdaptationType;
+            NodePath: string;
             Ref: obj }
         override this.Equals(yobj) =
             match yobj with
-                | :? Adaptation as y  -> y.Type = this.Type && y.Ref = this.Ref
+                | :? AdaptationFS as y  -> y.Type = this.Type && y.Ref = this.Ref
                 | _ -> false
         override this.GetHashCode() = hash (this.Type.GetHashCode(), this.NodePath.GetHashCode(), this.Ref.GetHashCode())
         interface System.IComparable with
             member this.CompareTo  yobj =
                 match yobj with
-                | :? Adaptation as y -> compare (this.Type, this.NodePath) (y.Type, y.NodePath)
+                | :? AdaptationFS as y -> compare (this.Type, this.NodePath) (y.Type, y.NodePath)
                 | _ -> invalidArg "yobj" "cannot compare values of different types"
 
 
-    type AdaptationModel = Set<Adaptation>
+    type AdaptationModelFS = Set<AdaptationFS>
 
     type ModelRegistry = Map<string,obj>
