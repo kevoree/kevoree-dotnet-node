@@ -56,8 +56,18 @@
   <ItemGroup>
     <None Include="App.config" />
     <Compile Include="ModelRegistry.fs" />
+    <Compile Include="AddDeployUnitCommand.fs" />
+    <Compile Include="AddInstanceCommand.fs" />
     <Compile Include="RemoveBindingCommand.fs" />
     <Compile Include="AddBindingCommand.fs" />
+    <Compile Include="StartStopInstanceCommand.fs" />
+    <Compile Include="LinkDeployUnitCommand.fs" />
+    <Compile Include="RemoveDeployUnitCommand.fs" />
+    <Compile Include="RemoveInstanceCommand.fs" />
+    <Compile Include="UpdateDictionaryCommand.fs" />
+    <Compile Include="UpdateCallMethodCommand.fs" />
+    <Compile Include="UpgradeInstanceCommand.fs" />
+    <Compile Include="NullCommand.fs" />
     <Compile Include="AdaptationType.fs" />
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="KevoreeKompareBean.fs" />

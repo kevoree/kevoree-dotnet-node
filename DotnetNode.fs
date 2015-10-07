@@ -41,7 +41,51 @@ type DotnetNode =
             member this.plan(actualModel: IContainerRootMarshalled, targetModel:IContainerRootMarshalled, traces:ITracesSequence): AdaptationModel =
                 plan actualModel targetModel (this.modelService.getNodeName()) traces
 
-            member this.getPrimitive(primitive: AdaptationPrimitive): PrimitiveCommand  = null
+                (*
+                    Replacer tous les cast par des demandes explicites de cast dans le context initial (donc dans le marshalled)
+                *)
+            member this.getPrimitive(primitive: AdaptationPrimitive): Org.Kevoree.Core.Api.Command.ICommand =
+                let nodeName = this.modelService.getNodeName()
+                match primitive.getType() with
+                | Org.Kevoree.Core.Api.AdaptationType.AddDeployUnit ->
+                    let deployUnit = primitive.getRef().CastToDeployUnit()
+                    new AddDeployUnitCommand(deployUnit, this.bootstrapService) :> Org.Kevoree.Core.Api.Command.ICommand
+                | Org.Kevoree.Core.Api.AdaptationType.RemoveDeployUnit ->
+                    let deployUnit = primitive.getRef().CastToDeployUnit()
+                    new RemoveDeployUnitCommand(deployUnit, this.bootstrapService) :> Org.Kevoree.Core.Api.Command.ICommand
+                | Org.Kevoree.Core.Api.AdaptationType.UpdateInstance -> new NullCommand() :> Org.Kevoree.Core.Api.Command.ICommand
+                | Org.Kevoree.Core.Api.AdaptationType.UpdateBinding -> new NullCommand() :> Org.Kevoree.Core.Api.Command.ICommand
+                | Org.Kevoree.Core.Api.AdaptationType.UpdateDictionaryInstance -> 
+                    let inst = primitive.getRef().CastToInstance()
+                    let value = primitive.getRef2().CastToValue()
+                    new UpdateDictionaryCommand(inst, value, nodeName, this.modelRegistry, this.bootstrapService, this.modelService) :> Org.Kevoree.Core.Api.Command.ICommand
+                | Org.Kevoree.Core.Api.AdaptationType.AddInstance ->
+                    let inst = primitive.getRef().CastToInstance()
+                    new AddInstanceCommand(inst, nodeName, this.modelRegistry, this.bootstrapService, this.modelService) :> Org.Kevoree.Core.Api.Command.ICommand
+                | Org.Kevoree.Core.Api.AdaptationType.RemoveInstance ->
+                    let inst = primitive.getRef().CastToInstance()
+                    new RemoveInstanceCommand(inst, nodeName, this.modelRegistry, this.bootstrapService, this.modelService) :> Org.Kevoree.Core.Api.Command.ICommand
+                | Org.Kevoree.Core.Api.AdaptationType.AddBinding ->
+                    let bind = primitive.getRef().CastToMBinding()
+                    new AddBindingCommand(bind, nodeName, this.modelRegistry) :> Org.Kevoree.Core.Api.Command.ICommand
+                | Org.Kevoree.Core.Api.AdaptationType.RemoveBinding -> 
+                    let bind = primitive.getRef().CastToMBinding()
+                    new RemoveBindingCommand(bind, nodeName, this.modelRegistry) :> Org.Kevoree.Core.Api.Command.ICommand
+                | Org.Kevoree.Core.Api.AdaptationType.StartInstance ->
+                    let inst = primitive.getRef().CastToInstance()
+                    new StartStopInstanceCommand(inst, nodeName, true, this.modelRegistry, this.bootstrapService) :> Org.Kevoree.Core.Api.Command.ICommand
+                | Org.Kevoree.Core.Api.AdaptationType.StopInstance ->
+                    let inst = primitive.getRef().CastToInstance()
+                    new StartStopInstanceCommand(inst, nodeName, false, this.modelRegistry, this.bootstrapService) :> Org.Kevoree.Core.Api.Command.ICommand
+                | Org.Kevoree.Core.Api.AdaptationType.LinkDeployUnit ->
+                    let deployUnit = primitive.getRef().CastToDeployUnit()
+                    new LinkDeployUnitCommand(deployUnit, this.bootstrapService, this.modelRegistry) :> Org.Kevoree.Core.Api.Command.ICommand
+                | Org.Kevoree.Core.Api.AdaptationType.UpdateCallMethod -> 
+                    let inst = primitive.getRef().CastToInstance()
+                    new UpdateCallMethodCommand(inst, nodeName, this.modelRegistry, this.bootstrapService) :> Org.Kevoree.Core.Api.Command.ICommand
+                | Org.Kevoree.Core.Api.AdaptationType.UpgradeInstance ->
+                    let inst = primitive.getRef().CastToInstance()
+                    new UpgradeInstanceCommand(inst, nodeName, this.modelRegistry, this.bootstrapService, this.modelService):> Org.Kevoree.Core.Api.Command.ICommand
 
             member this.Start():unit = ()
         inherit System.MarshalByRefObject        

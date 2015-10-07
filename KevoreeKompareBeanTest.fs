@@ -39,15 +39,17 @@ module Test =
         [<Test>]
         member this.Mock() = 
             let factory = DefaultKevoreeFactory()
-            let file1:ContainerRoot = factory.createJSONLoader().loadModelFromStream(new FileInputStream(@"C:\Users\mleduc\Documents\Visual Studio 2013\Projects\Solution1\testData\state1.json")).get(0) :?> ContainerRoot;
-            let file2:ContainerRoot = factory.createJSONLoader().loadModelFromStream(new FileInputStream(@"C:\Users\mleduc\Documents\Visual Studio 2013\Projects\Solution1\testData\state2.json")).get(0) :?> ContainerRoot;
+            let tmp1 = factory.createJSONLoader().loadModelFromStream(new FileInputStream(@"C:\Users\mleduc\Documents\Visual Studio 2013\Projects\Solution1\testData\empty.json")).get(0) :?> ContainerRoot
+            let file1 = new Org.Kevoree.Core.Marshalled.ContainerRootMarshalled(tmp1)
+            let tmp2 = factory.createJSONLoader().loadModelFromStream(new FileInputStream(@"C:\Users\mleduc\Documents\Visual Studio 2013\Projects\Solution1\testData\default.json")).get(0) :?> ContainerRoot;
+            let file2 = new Org.Kevoree.Core.Marshalled.ContainerRootMarshalled(tmp2)
             let dkf = new DefaultKevoreeFactory();
             let modelCompare = dkf.createModelCompare();
-            let nodeName = "node381"
-            let traces = modelCompare.diff(file1, file2)
-            (*let result = plan file1  file2  nodeName traces
+            let nodeName = "node0"
+            let traces = modelCompare.diff(tmp1, tmp2)
+            let result = plan file1  file2  nodeName (new Org.Kevoree.Core.TracesMarshalled(traces))
             let expected = []
-            CollectionAssert.IsEmpty([])*)
+            CollectionAssert.IsEmpty([])
             () 
         [<Test>]
         member this.StopInstance() = 

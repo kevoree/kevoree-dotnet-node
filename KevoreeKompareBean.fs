@@ -23,10 +23,10 @@ module KevoreeKompareBean =
     let traceToAdaptationComponent: TraceToAdaptation = fun trace context -> 
         if context.TargetNode.path() = trace.getSrcPath() 
         then
-            if trace.isOfType(typedefof<ModelAddTrace>) then set [ {  Type =  AdaptationType.AddInstance;  NodePath = context.TargetNode.path(); Ref = context.TargetModel.findByPath(trace.getModelAddTrace().getPreviousPath()) }  ]
+            if trace.isOfType(typedefof<ModelAddTrace>) then set [ {  Type =  AdaptationType.AddInstance;  NodePath = context.TargetNode.path(); Ref = context.TargetModel.findByPath(trace.getModelAddTrace().getPreviousPath()); Ref2 = None }  ]
             elif trace.isOfType(typedefof<ModelRemoveTrace>) then
                 let removedObjetPath = trace.getModelRemoveTrace().getObjPath()
-                set [ { Type =  AdaptationType.RemoveInstance;  NodePath = removedObjetPath; Ref = context.TargetModel.findByPath(removedObjetPath) }; {  Type =  AdaptationType.StopInstance;  NodePath = removedObjetPath; Ref = context.TargetModel.findByPath(removedObjetPath) }  ]
+                set [ { Type =  AdaptationType.RemoveInstance;  NodePath = removedObjetPath; Ref = context.TargetModel.findByPath(removedObjetPath); Ref2 = None }; {  Type =  AdaptationType.StopInstance;  NodePath = removedObjetPath; Ref = context.TargetModel.findByPath(removedObjetPath); Ref2 = None }  ]
             else set []
         else set []
 
@@ -36,13 +36,14 @@ module KevoreeKompareBean =
         if not (context.TargetModel.findByPath(trace.getSrcPath()).isOfType(typedefof<Channel>))
         then
             let nodePath = trace.getModelAddTrace().getPreviousPath()
-            let binding = context.TargetModel.findByPath(nodePath).getMBinding()
+            let binding = context.TargetModel.findByPath(nodePath).CastToMBinding()
             let channel = binding.getHub()
             
             let concatMe1 = set [ { 
                                     Type =  AdaptationType.AddBinding; 
                                     NodePath = nodePath // TODO : check que c'est bien le bon chemin
-                                    Ref = binding } ]
+                                    Ref = binding.CastToKFMContainer()
+                                    Ref2 = None } ]
             let concatMe2 = 
                 if channel <> null //&& context.ModelRegistry.lookup(channel) = null
                 then set []
@@ -72,11 +73,13 @@ module KevoreeKompareBean =
                     then set [{ 
                                 Type =  AdaptationType.StartInstance;
                                 NodePath = context.TargetNode.path()
-                                Ref = modelElement }]
+                                Ref = modelElement
+                                Ref2 = None }]
                     else set [{ 
                                 Type = AdaptationType.StopInstance; 
                                 NodePath = context.TargetNode.path()
-                                Ref = modelElement }]
+                                Ref = modelElement
+                                Ref2 = None }]
         else set []
     let traceToAdaptationTypeDefinition: TraceToAdaptation = fun trace context -> set []
         // TODO : a implémenter pour gérer le changement de version d'un élémént @Runtime
@@ -104,7 +107,7 @@ module KevoreeKompareBean =
         let modelElement = context.TargetModel.findByPath(trace.getSrcPath())
         if modelElement.isOfType(typedefof<Value>) && modelElement.getRefInParent() = "values"
         then 
-            let parentInstance = modelElement.eContainer().eContainer().getInstance()
+            let parentInstance = modelElement.eContainer().eContainer().CastToInstance()
             if parentInstance <> null
                 && parentInstance.isOfType(typedefof<ContainerNode>)
                 && parentInstance.getName() = context.NodeName 
@@ -114,16 +117,17 @@ module KevoreeKompareBean =
                 let dictionaryParent = modelElement.eContainer()
                 if dictionaryParent <> null
                     && dictionaryParent.isOfType(typedefof<FragmentDictionary>)
-                    && dictionaryParent.getFragmentDictionary().getName() <> context.NodeName
+                    && dictionaryParent.CastToFragmentDictionary().getName() <> context.NodeName
                 then set []
                 else 
                     let set1 = set [{
-                                        Type = AdaptationType.UpdateDictionaryInstance;
-                                        NodePath = context.TargetNode.path(); 
-                                        Ref = [ modelElement; modelElement.eContainer().eContainer() ] }]
+                                        Type = AdaptationType.UpdateDictionaryInstance
+                                        NodePath = context.TargetNode.path()
+                                        Ref = modelElement
+                                        Ref2 = Some(modelElement.eContainer().eContainer()) }]
                     let set2 = 
                         if parentInstance <> null
-                        then set [ { Type = AdaptationType.UpdateCallMethod; NodePath = parentInstance.path(); Ref = parentInstance } ]
+                        then set [ { Type = AdaptationType.UpdateCallMethod; NodePath = parentInstance.path(); Ref = parentInstance.CastToKFMContainer(); Ref2 = None } ]
                         else set []
 
                     set1 + set2
@@ -147,7 +151,11 @@ module KevoreeKompareBean =
         let ret = new AdaptationPrimitive()
         ret.setType(adaptationFS.Type)
         ret.setNodePath(adaptationFS.NodePath)
-        ret.setRef(adaptationFS.Type)
+        ret.setRef(adaptationFS.Ref)
+        let ref2 = match adaptationFS.Ref2 with
+            | Some(x) -> x
+            | None -> null
+        ret.setRef2(ref2)
         ret
 
     let convert:AdaptationModelFS -> Org.Kevoree.Core.Api.Adaptation.AdaptationModel = fun adaptationModelfs ->
