@@ -11,3 +11,4 @@ type UpgradeInstanceCommand(c:IInstanceMarshalled, nodeName:string, registry:Mod
     interface Org.Kevoree.Core.Api.Command.ICommand with
         member this.Execute() = false
         member this.Undo() = ()
+        member this.Name() = sprintf "[UpdateInstance nodeName=%s]" nodeName

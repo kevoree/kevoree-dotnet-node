@@ -10,3 +10,4 @@ type NullCommand() =
     interface Org.Kevoree.Core.Api.Command.ICommand with
         member this.Execute() = true
         member this.Undo() = ()
+        member this.Name() = sprintf "[Null]"

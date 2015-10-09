@@ -15,3 +15,4 @@ type AddBindingCommand(c:Org.Kevoree.Core.Api.IMarshalled.IMBindingMarshalled, n
             let cmd = new RemoveBindingCommand(c, nodeName, registry)
             let _ = (cmd :>  Org.Kevoree.Core.Api.Command.ICommand).Execute()
             ()
+        member this.Name() = sprintf "[AddBinding nodeName=%s]" nodeName

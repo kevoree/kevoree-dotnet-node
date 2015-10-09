@@ -7,3 +7,4 @@ type UpdateDictionaryCommand(c:IInstanceMarshalled, dicValue:IValueMarshalled, n
     interface Org.Kevoree.Core.Api.Command.ICommand with
         member this.Execute() = false
         member this.Undo() = ()
+        member this.Name() = sprintf "[UpdateDictionnary nodeName=%s]" nodeName

@@ -11,3 +11,4 @@ type RemoveInstanceCommand(c:IInstanceMarshalled, nodeName:string, registry:Mode
     interface Org.Kevoree.Core.Api.Command.ICommand with
         member this.Execute() = false
         member this.Undo() = ()
+        member this.Name() = sprintf "[RemoveInstance nodeName=%s]" nodeName

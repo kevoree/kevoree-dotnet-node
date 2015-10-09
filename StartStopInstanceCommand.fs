@@ -7,3 +7,4 @@ type StartStopInstanceCommand(c:IInstanceMarshalled, nodeName:string, start:bool
     interface Org.Kevoree.Core.Api.Command.ICommand with
         member this.Execute() = false
         member this.Undo() = ()
+        member this.Name() = sprintf "[StartStopInstance start=%b nodeName=%s]" start nodeName
