@@ -20,6 +20,28 @@ module KevoreeKompareBean =
     }
     type TraceToAdaptation = Org.Kevoree.Core.Api.IModelTraceMarshalled -> Context -> AdaptationModelFS
 
+    let rec isRelatedToPlatform(element: IKMFContainerMarshalled, context:Context):bool = 
+        if element.isOfType(typedefof<ComponentInstance>) then
+            let a = element.CastToComponentInstance()
+            if a.eContainer().isOfType(typedefof<ContainerNode>) then a.eContainer().CastToContainerNode().getName() = context.CurrentNode.getName() else false
+        elif element.isOfType(typedefof<Channel>) then
+            element.CastToChannel().getBindings().Exists (
+                fun binding ->  (binding.getPort() <> null) && (binding.getPort().eContainer() <> null) && (isRelatedToPlatform(binding.getPort().eContainer().CastToKFMContainer(), context))
+            )
+            //TODO : continuer à implanter cette partie du comparateur en se basant sur https://github.com/kevoree/kevoree-js-node-javascript/blob/eb8abc7d20e7e52a87a86301e4af50e5b62d63fc/lib/AdaptationEngine.js
+        elif element.isOfType(typedefof<Group>) then element.CastToGroup().getName() = context.CurrentNode.getName()
+        elif element.isOfType(typedefof<ContainerNode>) then 
+            let containerNode = element.CastToContainerNode()
+            ((containerNode.getName() = context.CurrentNode.getName()) || (containerNode.getHost() <> null && containerNode.getHost().getName() = context.CurrentNode.getName()))
+        elif element.isOfType(typedefof<MBinding>) then
+            let mbinding = element.CastToMBinding()
+            (mbinding.getPort() <> null && mbinding.getPort().eContainer() <> null && isRelatedToPlatform(mbinding.getPort().eContainer(), context)) || (mbinding.getHub() <> null && isRelatedToPlatform(mbinding.getHub().CastToKFMContainer(), context))
+        elif element.isOfType(typedefof<Value>) then
+            let value = element.CastToValue()
+            (value.eContainer().isOfType(typedefof<FragmentDictionary>) && value.eContainer().CastToFragmentDictionary().getName() = context.CurrentNode.getName()) || isRelatedToPlatform(element.eContainer().eContainer(), context)
+        elif element.isOfType(typedefof<Port>) then isRelatedToPlatform(element.eContainer(), context)
+        else false
+
     let traceToAdaptationComponent: TraceToAdaptation = fun trace context -> 
         if context.TargetNode.path() = trace.getSrcPath() 
         then
@@ -31,31 +53,49 @@ module KevoreeKompareBean =
         else set []
 
     // TODO : ici différent entre js et java, voir quoi faire, surement en rapport avec deployUnits
-    let traceToAdaptationDeployUnit: TraceToAdaptation = fun _ _ -> set [] // failwith "TODO traceToAdaptationDeployUnit"
-    let traceToAdaptationBindings: TraceToAdaptation = fun trace context ->
-        if not (context.TargetModel.findByPath(trace.getSrcPath()).isOfType(typedefof<Channel>))
+    let traceToAdaptationDeployUnit: TraceToAdaptation = fun trace context ->
+        let modelElement = context.TargetModel.findByPath(trace.getSrcPath())
+        if trace.getTraceType().name() = "ADD" && isRelatedToPlatform(modelElement, context)
+        then set [{ Type = AdaptationType.AddDeployUnit; NodePath = ""; Ref = modelElement; Ref2 = None }]
+        elif trace .getTraceType().name() = "REMOVE"
         then
-            let nodePath = trace.getModelAddTrace().getPreviousPath()
-            let binding = context.TargetModel.findByPath(nodePath).CastToMBinding()
-            let channel = binding.getHub()
-            
-            let concatMe1 = set [ { 
-                                    Type =  AdaptationType.AddBinding; 
-                                    NodePath = nodePath // TODO : check que c'est bien le bon chemin
-                                    Ref = binding.CastToKFMContainer()
-                                    Ref2 = None } ]
-            let concatMe2 = 
-                if channel <> null //&& context.ModelRegistry.lookup(channel) = null
-                then set []
-                else set []
-            concatMe1 + concatMe2
-            (*if trace :? ModelAddTrace
-            then 
-                let pt1 = [ { 
-                            Type =  AdaptationType.AddInstance; 
-                            NodePath = (trace :?> ModelAddTrace).getPreviousPath() // TODO : check que c'est bien le bon chemin
-                            Ref = context.TargetModel.findByPath(removedObjetPath) } ]
-            else set []*)
+            let removedObjetPath = trace.getModelRemoveTrace().getObjPath()
+            let du = context.TargetModel.findByPath(removedObjetPath);
+            if du <> null  then set [{ Type = AdaptationType.RemoveDeployUnit; NodePath = ""; Ref = du; Ref2 = None }] else set []
+        else set []
+
+    let traceToAdaptationBindings: TraceToAdaptation = fun trace context ->
+        if not (context.TargetModel.findByPath(trace.getSrcPath()).isOfType(typedefof<Channel>)) then 
+            if trace.isOfType(typedefof<ModelAddTrace>) then
+                let binding = context.TargetModel.findByPath(trace.getModelAddTrace().getPreviousPath()).CastToMBinding()
+                let addBinding = set[ { Type = AdaptationType.AddBinding; NodePath=""; Ref=binding.CastToKFMContainer(); Ref2=None}]
+                let channel = binding.getHub()
+                (* if we have a bind we check if our local registry already contains a simmilar node and if it does not, we add it *)
+                let addInstance =   if (channel <> null && not (context.ModelRegistry.ContainsKey(channel.path())))
+                                    then 
+                                        let addInstanceInner = set [{Type=AdaptationType.AddInstance; NodePath=""; Ref=channel.CastToKFMContainer(); Ref2=None }]
+                                        let updateDictionary =  if channel.getDictionnary() <> null
+                                                                then List.map (fun (value:IValueMarshalled) -> { Type=AdaptationType.UpdateDictionary; NodePath=""; Ref=value.CastToKFMContainer(); Ref2=None }) (List.ofArray (channel.getDictionnary().getValues().ToArray()))  |> Set.ofList
+                                                                else set []
+                                        let updateFragmentDictionarty:Set<AdaptationFS> = List.concat (List.map (fun (value:IFragmentDictionaryMarshalled) -> if value.getName() = context.NodeName then List.map (fun (v:IValueMarshalled) -> { Type=AdaptationType.UpdateDictionary; NodePath=""; Ref=v.CastToKFMContainer(); Ref2=None }) (List.ofArray (value.getValues().ToArray())) else []) (List.ofArray (channel.getFragmentDictionary().ToArray()))) |> Set.ofList
+                                        addInstanceInner + updateDictionary + updateFragmentDictionarty
+                                    else set []
+                let startInstance = if channel.getStarted() then set [{Type=AdaptationType.StartInstance; NodePath=""; Ref=channel.CastToKFMContainer(); Ref2=None}] else set []
+                addBinding + addInstance + startInstance
+                
+            elif trace.isOfType(typedefof<ModelRemoveTrace>) then 
+                //let binding = context.TargetModel.findByPath(trace.getModelRemoveTrace().getObjPath()).CastToMBinding()
+                //let previousBinding =  context.CurrentModel.findByPath(trace.getModelRemoveTrace().getObjPath()).CastToMBinding();
+                let binding = context.CurrentModel.findByPath(trace.getModelRemoveTrace().getObjPath()).CastToMBinding()
+                let newChan = context.TargetModel.findByPath(binding.getHub().path()).CastToChannel()
+                let existBinding =  List.exists (fun (a:IMBindingMarshalled) -> isRelatedToPlatform(a.CastToKFMContainer(),context)) (List.ofArray (newChan.getBindings().ToArray()))
+                let oldChannel = context.CurrentModel.findByPath(binding.getHub().path())
+                let removeInstance  = if (not existBinding) && context.ModelRegistry.ContainsKey(oldChannel.path()) then set [] else set [{Type=AdaptationType.RemoveInstance; NodePath=""; Ref=binding.getHub().CastToKFMContainer(); Ref2=None}]
+                let stopChannel = if binding.getHub().getStarted() then set [{Type=AdaptationType.StopInstance; NodePath=""; Ref=oldChannel.CastToKFMContainer(); Ref2=None}] else set []
+                let removeBinding = if isRelatedToPlatform(binding.CastToKFMContainer(), context) then set [{Type=AdaptationType.RemoveBinding; NodePath=""; Ref=binding.CastToKFMContainer(); Ref2=None}] else set []
+                let ret = removeBinding + stopChannel + removeInstance
+                ret
+            else set []
         else set []
 
 
@@ -81,26 +121,6 @@ module KevoreeKompareBean =
                                 Ref = modelElement
                                 Ref2 = None }]
         else set []
-    let traceToAdaptationTypeDefinition: TraceToAdaptation = fun trace context -> set []
-        // TODO : a implémenter pour gérer le changement de version d'un élémént @Runtime
-        (*let modelElement = context.TargetModel.findByPath(trace.getSrcPath())
-        if trace :? ModelAddTrace && modelElement :? Instance
-        then
-            let currentModelElement = context.CurrentModel.findByPath(modelElement.path()) :?> Instance
-            let targetModelElement = context.TargetModel.findByPath(modelElement.path()) :?> Instance
-            if currentModelElement <> null && targetModelElement <> null
-            then
-                if modelElement.path() = context.TargetNode.path()
-                then set []
-                else
-                    if currentModelElement.getStarted() && targetModelElement.getStarted()
-                    then set [] // TODO
-                    else
-                        if currentModelElement :?  Channel
-                        then set [] // TODO
-                        else 
-            else set []
-        else set []*)
     let traceToAdaptationIgnored:TraceToAdaptation = fun trace context -> set []
 
     let traceToAdaptationTypeValue:TraceToAdaptation = fun trace context ->
@@ -120,16 +140,9 @@ module KevoreeKompareBean =
                     && dictionaryParent.CastToFragmentDictionary().getName() <> context.NodeName
                 then set []
                 else 
-                    let set1 = set [{
-                                        Type = AdaptationType.UpdateDictionaryInstance
-                                        NodePath = context.TargetNode.path()
-                                        Ref = modelElement
-                                        Ref2 = Some(modelElement.eContainer().eContainer()) }]
-                    let set2 = 
-                        if parentInstance <> null
-                        then set [ { Type = AdaptationType.UpdateCallMethod; NodePath = parentInstance.path(); Ref = parentInstance.CastToKFMContainer(); Ref2 = None } ]
-                        else set []
-
+                    // TODO : a quoi sers le path ?
+                    let set1 = set [{ Type = AdaptationType.UpdateDictionary; NodePath=""; Ref=modelElement; Ref2=None}]
+                    let set2 = if dictionaryParent = null then set [] else set [ { Type = AdaptationType.UpdateInstance; NodePath=""; Ref=dictionaryParent; Ref2=None}]
                     set1 + set2
         else  set []
 
@@ -141,7 +154,6 @@ module KevoreeKompareBean =
                     | "deployUnits" -> traceToAdaptationDeployUnit trace context
                     | "bindings" -> traceToAdaptationBindings trace context
                     | "started" -> traceToAdaptationStarted trace context
-                    | "typeDefinition" -> traceToAdaptationTypeDefinition trace context
                     | "value" -> traceToAdaptationTypeValue trace context
                     | _ -> traceToAdaptationIgnored trace context // TODO : ajout des logs sur 
         
@@ -174,4 +186,5 @@ module KevoreeKompareBean =
             CurrentNode = current.findNodesByID(nodeName);
             CurrentModel = current;
             ModelRegistry = Map.empty }
-        convert (List.fold (traceToAdaptation context) Set.empty asdf)
+        let result:AdaptationModelFS = List.fold (traceToAdaptation context) Set.empty asdf
+        convert result

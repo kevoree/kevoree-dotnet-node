@@ -33,7 +33,15 @@ module AdaptationType =
         interface System.IComparable with
             member this.CompareTo  yobj =
                 match yobj with
-                | :? AdaptationFS as y -> compare (this.Type, this.NodePath) (y.Type, y.NodePath)
+                | :? AdaptationFS as y -> 
+                    let thisCodeRef2 = match this.Ref2 with
+                        | None -> ""
+                        | Some(x) -> x.ToString()
+                    let thatCodeRef2 = match y.Ref2 with
+                        | None -> ""
+                        | Some(x) -> x.ToString()
+                    let cmp = compare (this.Type, this.NodePath, this.Ref.ToString(), thisCodeRef2) (y.Type, y.NodePath, y.Ref.ToString(), thatCodeRef2)
+                    cmp
                 | _ -> invalidArg "yobj" "cannot compare values of different types"
 
 

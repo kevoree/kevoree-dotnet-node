@@ -54,8 +54,7 @@ type DotnetNode =
                     let deployUnit = primitive.getRef().CastToDeployUnit()
                     new RemoveDeployUnitCommand(deployUnit, this.bootstrapService) :> Org.Kevoree.Core.Api.Command.ICommand
                 | Org.Kevoree.Core.Api.AdaptationType.UpdateInstance -> new NullCommand() :> Org.Kevoree.Core.Api.Command.ICommand
-                | Org.Kevoree.Core.Api.AdaptationType.UpdateBinding -> new NullCommand() :> Org.Kevoree.Core.Api.Command.ICommand
-                | Org.Kevoree.Core.Api.AdaptationType.UpdateDictionaryInstance -> 
+                | Org.Kevoree.Core.Api.AdaptationType.UpdateDictionary -> 
                     let inst = primitive.getRef().CastToInstance()
                     let value = primitive.getRef2().CastToValue()
                     new UpdateDictionaryCommand(inst, value, nodeName, this.modelRegistry, this.bootstrapService, this.modelService) :> Org.Kevoree.Core.Api.Command.ICommand
@@ -77,15 +76,6 @@ type DotnetNode =
                 | Org.Kevoree.Core.Api.AdaptationType.StopInstance ->
                     let inst = primitive.getRef().CastToInstance()
                     new StartStopInstanceCommand(inst, nodeName, false, this.modelRegistry, this.bootstrapService) :> Org.Kevoree.Core.Api.Command.ICommand
-                | Org.Kevoree.Core.Api.AdaptationType.LinkDeployUnit ->
-                    let deployUnit = primitive.getRef().CastToDeployUnit()
-                    new LinkDeployUnitCommand(deployUnit, this.bootstrapService, this.modelRegistry) :> Org.Kevoree.Core.Api.Command.ICommand
-                | Org.Kevoree.Core.Api.AdaptationType.UpdateCallMethod -> 
-                    let inst = primitive.getRef().CastToInstance()
-                    new UpdateCallMethodCommand(inst, nodeName, this.modelRegistry, this.bootstrapService) :> Org.Kevoree.Core.Api.Command.ICommand
-                | Org.Kevoree.Core.Api.AdaptationType.UpgradeInstance ->
-                    let inst = primitive.getRef().CastToInstance()
-                    new UpgradeInstanceCommand(inst, nodeName, this.modelRegistry, this.bootstrapService, this.modelService):> Org.Kevoree.Core.Api.Command.ICommand
 
             member this.Start():unit = ()
         inherit System.MarshalByRefObject        
