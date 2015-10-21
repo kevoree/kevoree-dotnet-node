@@ -1,13 +1,13 @@
 ﻿namespace Org.Kevoree.Library
 
 open Org.Kevoree.Core.Api.IMarshalled
+open Org.Kevoree.Log.Api
 
-type UpdateDictionaryCommand(c:IInstanceMarshalled, dicValue:IValueMarshalled, nodeName:string, registry:ModelRegistry, bs:Org.Kevoree.Core.Api.BootstrapService, modelService:Org.Kevoree.Core.Api.ModelService) =
+type UpdateDictionaryCommand(c:IInstanceMarshalled, dicValue:IValueMarshalled, nodeName:string, registry:ModelRegistry, bs:Org.Kevoree.Core.Api.BootstrapService, modelService:Org.Kevoree.Core.Api.ModelService, logger:ILogger) =
     inherit System.MarshalByRefObject()
     interface Org.Kevoree.Core.Api.Command.ICommand with
         member this.Execute() =
-            (*let previousModel =  modelService.getCurrentModel().getModel()
-            let previousValue = previousModel.findByPath(dicValue.path());*)
+            logger.Debug("Execute UpdateDictionary")
             let path = c.path()
             let lookup = registry.ContainsKey(path)
             if lookup then
@@ -16,5 +16,7 @@ type UpdateDictionaryCommand(c:IInstanceMarshalled, dicValue:IValueMarshalled, n
                 component.updateDictionary(attributeDefinition, dicValue);
                 true
             else false
-        member this.Undo() = ()
+        member this.Undo() = 
+            logger.Debug("Undo UpdateDictionay")
+            ()
         member this.Name() = sprintf "[UpdateDictionnary nodeName=%s]" nodeName

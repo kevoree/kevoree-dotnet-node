@@ -1,5 +1,7 @@
 ﻿namespace Org.Kevoree.Library.Runner
 
+// TODO : still useful ?
+
 type ComponentRunner =
     inherit Org.Kevoree.Core.Api.IRunner
     abstract Run:Unit

@@ -201,6 +201,11 @@
       <Project>{ad3c2f49-5c3b-46d3-a283-600fe11a0aa2}</Project>
       <Private>True</Private>
     </ProjectReference>
+    <ProjectReference Include="..\kevoree-dotnet-log-api\kevoree-dotnet-log-api.csproj">
+      <Name>kevoree-dotnet-log-api</Name>
+      <Project>{5d6a3c3e-703a-4af7-b8f2-8580f418ae50}</Project>
+      <Private>True</Private>
+    </ProjectReference>
   </ItemGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
