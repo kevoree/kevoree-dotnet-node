@@ -45,7 +45,9 @@ module KevoreeKompareBean =
     let traceToAdaptationComponent: TraceToAdaptation = fun trace context -> 
         if context.TargetNode.path() = trace.getSrcPath() 
         then
-            if trace.isOfType(typedefof<ModelAddTrace>) then set [ {  Type =  AdaptationType.AddInstance;  NodePath = context.TargetNode.path(); Ref = context.TargetModel.findByPath(trace.getModelAddTrace().getPreviousPath()); Ref2 = None }  ]
+            if trace.isOfType(typedefof<ModelAddTrace>) then
+                let ref = context.TargetModel.findByPath(trace.getModelAddTrace().getPreviousPath())
+                set [ {  Type =  AdaptationType.AddInstance;  NodePath = context.TargetNode.path(); Ref = ref; Ref2 = None }  ]
             elif trace.isOfType(typedefof<ModelRemoveTrace>) then
                 let removedObjetPath = trace.getModelRemoveTrace().getObjPath()
                 set [ { Type =  AdaptationType.RemoveInstance;  NodePath = removedObjetPath; Ref = context.TargetModel.findByPath(removedObjetPath); Ref2 = None }; {  Type =  AdaptationType.StopInstance;  NodePath = removedObjetPath; Ref = context.TargetModel.findByPath(removedObjetPath); Ref2 = None }  ]
@@ -73,11 +75,12 @@ module KevoreeKompareBean =
                 (* if we have a bind we check if our local registry already contains a simmilar node and if it does not, we add it *)
                 let addInstance =   if (channel <> null && not (context.ModelRegistry.ContainsKey(channel.path())))
                                     then 
-                                        let addInstanceInner = set [{Type=AdaptationType.AddInstance; NodePath=""; Ref=channel.CastToKFMContainer(); Ref2=None }]
-                                        let updateDictionary =  if channel.getDictionnary() <> null
-                                                                then List.map (fun (value:IValueMarshalled) -> { Type=AdaptationType.UpdateDictionary; NodePath=""; Ref=value.CastToKFMContainer(); Ref2=None }) (List.ofArray (channel.getDictionnary().getValues().ToArray()))  |> Set.ofList
+                                        let ref = channel.CastToKFMContainer()
+                                        let addInstanceInner = set [{Type=AdaptationType.AddInstance; NodePath=""; Ref=ref; Ref2=None }]
+                                        let updateDictionary =  if channel.getDictionary() <> null
+                                                                then List.map (fun (value:IValueMarshalled) -> { Type=AdaptationType.UpdateDictionary; NodePath=""; Ref=channel.CastToKFMContainer(); Ref2=Some(value.CastToKFMContainer()) }) (List.ofArray (channel.getDictionary().getValues().ToArray()))  |> Set.ofList
                                                                 else set []
-                                        let updateFragmentDictionarty:Set<AdaptationFS> = List.concat (List.map (fun (value:IFragmentDictionaryMarshalled) -> if value.getName() = context.NodeName then List.map (fun (v:IValueMarshalled) -> { Type=AdaptationType.UpdateDictionary; NodePath=""; Ref=v.CastToKFMContainer(); Ref2=None }) (List.ofArray (value.getValues().ToArray())) else []) (List.ofArray (channel.getFragmentDictionary().ToArray()))) |> Set.ofList
+                                        let updateFragmentDictionarty:Set<AdaptationFS> = List.concat (List.map (fun (value:IFragmentDictionaryMarshalled) -> if value.getName() = context.NodeName then List.map (fun (v:IValueMarshalled) -> { Type=AdaptationType.UpdateDictionary; NodePath=""; Ref=channel.CastToKFMContainer(); Ref2=Some(v.CastToKFMContainer()) }) (List.ofArray (value.getValues().ToArray())) else []) (List.ofArray (channel.getFragmentDictionary().ToArray()))) |> Set.ofList
                                         addInstanceInner + updateDictionary + updateFragmentDictionarty
                                     else set []
                 let startInstance = if channel.getStarted() then set [{Type=AdaptationType.StartInstance; NodePath=""; Ref=channel.CastToKFMContainer(); Ref2=None}] else set []
@@ -90,8 +93,8 @@ module KevoreeKompareBean =
                 let newChan = context.TargetModel.findByPath(binding.getHub().path()).CastToChannel()
                 let existBinding =  List.exists (fun (a:IMBindingMarshalled) -> isRelatedToPlatform(a.CastToKFMContainer(),context)) (List.ofArray (newChan.getBindings().ToArray()))
                 let oldChannel = context.CurrentModel.findByPath(binding.getHub().path())
-                let removeInstance  = if (not existBinding) && context.ModelRegistry.ContainsKey(oldChannel.path()) then set [] else set [{Type=AdaptationType.RemoveInstance; NodePath=""; Ref=binding.getHub().CastToKFMContainer(); Ref2=None}]
-                let stopChannel = if binding.getHub().getStarted() then set [{Type=AdaptationType.StopInstance; NodePath=""; Ref=oldChannel.CastToKFMContainer(); Ref2=None}] else set []
+                let removeInstance  = if (not existBinding) && context.ModelRegistry.ContainsKey(oldChannel.path()) then set [{Type=AdaptationType.RemoveInstance; NodePath=""; Ref=binding.getHub().CastToKFMContainer(); Ref2=None}] else set []
+                let stopChannel = if (not existBinding) && binding.getHub().getStarted() then set [{Type=AdaptationType.StopInstance; NodePath=""; Ref=oldChannel.CastToKFMContainer(); Ref2=None}] else set []
                 let removeBinding = if isRelatedToPlatform(binding.CastToKFMContainer(), context) then set [{Type=AdaptationType.RemoveBinding; NodePath=""; Ref=binding.CastToKFMContainer(); Ref2=None}] else set []
                 let ret = removeBinding + stopChannel + removeInstance
                 ret
@@ -100,9 +103,11 @@ module KevoreeKompareBean =
 
 
     let traceToAdaptationStarted: TraceToAdaptation = fun trace context ->
-        let modelElement = context.TargetModel.findByPath(trace.getSrcPath())
+        let srcPath:string = trace.getSrcPath()
+        let modelElement:IKMFContainerMarshalled = context.TargetModel.findByPath(srcPath)
         if modelElement.isOfType(typedefof<Instance>) && trace.isOfType(typedefof<ModelSetTrace>)
         then
+            let instanceElement = modelElement.CastToInstance()
             if modelElement.eContainer().isOfType(typedefof<ContainerNode>) && not (modelElement.eContainer().path() = context.TargetNode.path())
             then set []
             else
@@ -110,11 +115,19 @@ module KevoreeKompareBean =
                 then set []
                 else 
                     if trace.getModelSetTrace().getContent().ToLower() = "true"
-                    then set [{ 
-                                Type =  AdaptationType.StartInstance;
-                                NodePath = context.TargetNode.path()
-                                Ref = modelElement
-                                Ref2 = None }]
+                    then 
+                        let start = set [{ Type =  AdaptationType.StartInstance; NodePath = context.TargetNode.path(); Ref = modelElement; Ref2 = None }]
+                        let kDict = instanceElement.getDictionary();
+                        let values = if kDict <> null then kDict.getValues() else null
+                        let dicti = if values <> null
+                                    then Array.map (fun (e:IValueMarshalled) -> {Type = AdaptationType.UpdateDictionary; NodePath = context.TargetNode.path(); Ref = instanceElement.CastToKFMContainer(); Ref2 = Some(e.CastToKFMContainer()) }) (values.ToArray()) |> Set.ofArray
+                                    else set []
+                        let fDict = instanceElement.getFragmentDictionary();
+                        let dictj = if values <> null
+                                    then Array.map (fun (e:IValueMarshalled) -> {Type = AdaptationType.UpdateDictionary; NodePath = context.TargetNode.path(); Ref = instanceElement.CastToKFMContainer(); Ref2 = Some(e.CastToKFMContainer()) }) (values.ToArray()) |> Set.ofArray
+                                    else set []
+                        // TODO : peut être utile ici de filtrer les mises à jours inutiles, c'est à dire les update de valeurs qui n'ont pas changées dans le temps.
+                        start + dicti
                     else set [{ 
                                 Type = AdaptationType.StopInstance; 
                                 NodePath = context.TargetNode.path()
@@ -125,7 +138,10 @@ module KevoreeKompareBean =
 
     let traceToAdaptationTypeValue:TraceToAdaptation = fun trace context ->
         let modelElement = context.TargetModel.findByPath(trace.getSrcPath())
-        if modelElement.isOfType(typedefof<Value>) && modelElement.getRefInParent() = "values"
+        let c1 = modelElement.isOfType(typedefof<Value>);
+        let refInParent = modelElement.getRefInParent()
+        let c2 = refInParent = "values"
+        if c1 && c2
         then 
             let parentInstance = modelElement.eContainer().eContainer().CastToInstance()
             if parentInstance <> null
@@ -141,8 +157,8 @@ module KevoreeKompareBean =
                 then set []
                 else 
                     // TODO : a quoi sers le path ?
-                    let set1 = set [{ Type = AdaptationType.UpdateDictionary; NodePath=""; Ref=modelElement; Ref2=None}]
-                    let set2 = if dictionaryParent = null then set [] else set [ { Type = AdaptationType.UpdateInstance; NodePath=""; Ref=dictionaryParent; Ref2=None}]
+                    let set1 = set [{ Type = AdaptationType.UpdateDictionary; NodePath=""; Ref=modelElement.eContainer().eContainer(); Ref2=Some(modelElement)}] 
+                    let set2 = if dictionaryParent = null then set [] else set [ { Type = AdaptationType.UpdateInstance; NodePath=""; Ref=dictionaryParent; Ref2=None}] 
                     set1 + set2
         else  set []
 

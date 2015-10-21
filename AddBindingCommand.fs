@@ -5,8 +5,8 @@ type AddBindingCommand(c:Org.Kevoree.Core.Api.IMarshalled.IMBindingMarshalled, n
 
     interface Org.Kevoree.Core.Api.Command.ICommand with
         member this.Execute() =
-            let kevoreeChannelFound = registry.lookup(c.getHub().CastToKFMContainer())
-            let kevoreeComponentFound = registry.lookup(c.getPort().eContainer())
+            let kevoreeChannelFound = registry.[c.getHub().CastToKFMContainer().path()]
+            let kevoreeComponentFound = registry.[c.getPort().eContainer().path()]
             if kevoreeChannelFound <> null && kevoreeComponentFound <> null then
                 true
             else 

@@ -1,24 +1,6 @@
 ﻿namespace Org.Kevoree.Library
 
 module AdaptationType =
-
-    ///[<System.FlagsAttribute>]
-    (*type AdaptationTypeFS =
-        | AddDeployUnit = 1
-        | RemoveDeployUnit = 2
-        | UpdateInstance =3
-        | UpdateBinding = 4
-        | UpdateDictionaryInstance =5
-        | AddInstance = 6
-        | RemoveInstance = 7
-        | AddBinding = 8
-        | RemoveBinding = 9
-        | StartInstance = 10
-        | StopInstance = 11
-        | LinkDeployUnit = 12
-        | UpdateCallMethod = 13
-        | UpgradeInstance = 14*)
-
     [<StructuredFormatDisplay("Adaptation({Type}, {PrimitiveType}, {Ref})"); CustomEquality; CustomComparison>]
     type AdaptationFS  =
         {   Type: Org.Kevoree.Core.Api.AdaptationType;

@@ -15,6 +15,10 @@ type AddInstanceCommand(c:IInstanceMarshalled, nodeName:string, registry:ModelRe
             let typeDef = c.GetTypeDefinition()
             let version = typeDef.getVersion()
             let name = typeDef.getName()
-            bs.LoadSomething(name, version, c.path()).Run();
+            let instance = bs.LoadSomething(name, version, c.path());
+            let path = c.path()
+            let _ = registry.Add(path, instance)
+            true
+
         member this.Undo() = ()
         member this.Name() = sprintf "[AddInstance nodeName=%s]" nodeName

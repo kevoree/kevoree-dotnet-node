@@ -20,13 +20,12 @@ type DotnetNode =
 
         [<Param(Optional = true, DefaultValue = "INFO")>] val mutable log:string
 
-        member this.modelRegistry:ModelRegistry = new ModelRegistry();
-
+        val mutable modelRegistry:ModelRegistry
 
         [<Start>]
         member this.Start() =
             this.modelService.registerModelListener(this)
-            this.modelRegistry.registerByPath(this.context.getPath(), this)
+            this.modelRegistry.Add(this.context.getPath(), this)
 
         interface Org.Kevoree.Annotation.DeployUnit
         interface ModelListener with
@@ -87,4 +86,5 @@ type DotnetNode with
         bootstrapService = null
         context = null
         log = "INFO"
+        modelRegistry = new ModelRegistry()
     }
