@@ -172,7 +172,6 @@ module KevoreeKompareBean =
                     | "started" -> traceToAdaptationStarted trace context
                     | "value" -> traceToAdaptationTypeValue trace context
                     | _ -> traceToAdaptationIgnored trace context // TODO : ajout des logs sur 
-        
         adaptations + adt
 
     let convertAdapt:AdaptationFS -> AdaptationPrimitive = fun adaptationFS ->

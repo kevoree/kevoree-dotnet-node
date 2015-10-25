@@ -11,9 +11,17 @@ type UpdateDictionaryCommand(c:IInstanceMarshalled, dicValue:IValueMarshalled, n
             let path = c.path()
             let lookup = registry.ContainsKey(path)
             if lookup then
-                let component = registry.[path] :?> Org.Kevoree.Core.Api.IComponentRunner
-                let attributeDefinition = dicValue.eContainer().eContainer().CastToInstance().GetTypeDefinition().getDictionaryType().findAttributesByID(dicValue.getName());
-                component.updateDictionary(attributeDefinition, dicValue);
+                let attributeDefinition = dicValue.eContainer().eContainer().CastToInstance().GetTypeDefinition().getDictionaryType().findAttributesByID(dicValue.getName())
+                if typedefof<Org.Kevoree.Core.Api.IRunner>.IsAssignableFrom(registry.[path].GetType()) then
+                    let componentz = registry.[path] :?> Org.Kevoree.Core.Api.IRunner
+                    componentz.updateDictionary(attributeDefinition, dicValue)
+                    ()
+                else
+                    let componentz:Org.Kevoree.Core.Api.NodeType = registry.[path] :?> Org.Kevoree.Core.Api.NodeType
+                    let injector:Org.Kevoree.Library.Annotation.KevoreeInjector<Org.Kevoree.Annotation.Param> = new Org.Kevoree.Library.Annotation.KevoreeInjector<Org.Kevoree.Annotation.Param>();
+                    injector.smartInject(componentz, attributeDefinition.getName(), attributeDefinition.getDatatype(), dicValue.getValue())
+                    ()
+                    
                 true
             else false
         member this.Undo() = 

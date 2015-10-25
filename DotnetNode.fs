@@ -46,13 +46,16 @@ type DotnetNode =
 
         interface Org.Kevoree.Core.Api.NodeType with
             member this.plan(actualModel: IContainerRootMarshalled, targetModel:IContainerRootMarshalled, traces:ITracesSequence): AdaptationModel =
-                plan actualModel targetModel (this.modelService.getNodeName()) traces
+                let result = plan actualModel targetModel (this.modelService.getNodeName()) traces
+                this.logger.Debug(result.ToString());
+                result
 
                 (*
                     Replacer tous les cast par des demandes explicites de cast dans le context initial (donc dans le marshalled)
                 *)
             member this.getPrimitive(primitive: AdaptationPrimitive): Org.Kevoree.Core.Api.Command.ICommand =
                 let nodeName = this.modelService.getNodeName()
+                let nodePath = this.modelService.getCurrentModel().getModel().findNodesByID(nodeName).path()
                 match primitive.getType() with
                 | Org.Kevoree.Core.Api.AdaptationType.AddDeployUnit ->
                     let deployUnit = primitive.getRef().CastToDeployUnit()
@@ -73,7 +76,7 @@ type DotnetNode =
                     new RemoveInstanceCommand(inst, nodeName, this.modelRegistry, this.bootstrapService, this.modelService, this.logger) :> Org.Kevoree.Core.Api.Command.ICommand
                 | Org.Kevoree.Core.Api.AdaptationType.AddBinding ->
                     let bind = primitive.getRef().CastToMBinding()
-                    new AddBindingCommand(bind, nodeName, this.modelRegistry, this.logger) :> Org.Kevoree.Core.Api.Command.ICommand
+                    new AddBindingCommand(bind, nodeName, this.modelRegistry, nodePath, this.logger) :> Org.Kevoree.Core.Api.Command.ICommand
                 | Org.Kevoree.Core.Api.AdaptationType.RemoveBinding -> 
                     let bind = primitive.getRef().CastToMBinding()
                     new RemoveBindingCommand(bind, nodeName, this.modelRegistry, this.logger) :> Org.Kevoree.Core.Api.Command.ICommand
@@ -93,7 +96,7 @@ type DotnetNode with
         modelService = null
         bootstrapService = null
         context = null
-        logLevel = "INFO"
+        logLevel = "DEBUG"
         logger = null
         modelRegistry = new ModelRegistry()
     }

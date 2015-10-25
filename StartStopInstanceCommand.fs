@@ -7,7 +7,7 @@ type StartStopInstanceCommand(c:IInstanceMarshalled, nodeName:string, start:bool
     inherit System.MarshalByRefObject()
     interface Org.Kevoree.Core.Api.Command.ICommand with
         member this.Execute() = 
-            logger.Debug(sprintf "Execute StartStopInstance start=%b" start)
+            logger.Debug(sprintf "Execute StartStopInstance start=%b %s" start (c.path()))
             let target = registry.[c.path()] :?> Org.Kevoree.Core.Api.IComponentRunner
             if target <> null then
                 if start then target.Run() else target.Stop();

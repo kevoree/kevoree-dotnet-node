@@ -12,8 +12,18 @@ type RemoveInstanceCommand(c:IInstanceMarshalled, nodeName:string, registry:Mode
     interface Org.Kevoree.Core.Api.Command.ICommand with
         member this.Execute() = 
             logger.Debug("Execute RemoveInstance")
-            false
+            let path = c.path()
+            if registry.ContainsKey(path)
+            then
+                registry.Remove(path)
+                true
+            else false
         member this.Undo() = 
             logger.Debug("Undo RemoveInstance")
-            ()
+            let path = c.path()
+            if registry.ContainsKey(path)
+            then ()
+            else
+                (new AddInstanceCommand(c, nodeName, registry, bs, modelService, logger) :> Org.Kevoree.Core.Api.Command.ICommand ).Execute()
+                ()
         member this.Name() = sprintf "[RemoveInstance nodeName=%s]" nodeName
