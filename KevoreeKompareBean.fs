@@ -87,17 +87,21 @@ module KevoreeKompareBean =
                 addBinding + addInstance + startInstance
                 
             elif trace.isOfType(typedefof<ModelRemoveTrace>) then 
-                //let binding = context.TargetModel.findByPath(trace.getModelRemoveTrace().getObjPath()).CastToMBinding()
-                //let previousBinding =  context.CurrentModel.findByPath(trace.getModelRemoveTrace().getObjPath()).CastToMBinding();
                 let binding = context.CurrentModel.findByPath(trace.getModelRemoveTrace().getObjPath()).CastToMBinding()
-                let newChan = context.TargetModel.findByPath(binding.getHub().path()).CastToChannel()
-                let existBinding =  List.exists (fun (a:IMBindingMarshalled) -> isRelatedToPlatform(a.CastToKFMContainer(),context)) (List.ofArray (newChan.getBindings().ToArray()))
-                let oldChannel = context.CurrentModel.findByPath(binding.getHub().path())
-                let removeInstance  = if (not existBinding) && context.ModelRegistry.ContainsKey(oldChannel.path()) then set [{Type=AdaptationType.RemoveInstance; NodePath=""; Ref=binding.getHub().CastToKFMContainer(); Ref2=None}] else set []
-                let stopChannel = if (not existBinding) && binding.getHub().getStarted() then set [{Type=AdaptationType.StopInstance; NodePath=""; Ref=oldChannel.CastToKFMContainer(); Ref2=None}] else set []
-                let removeBinding = if isRelatedToPlatform(binding.CastToKFMContainer(), context) then set [{Type=AdaptationType.RemoveBinding; NodePath=""; Ref=binding.CastToKFMContainer(); Ref2=None}] else set []
-                let ret = removeBinding + stopChannel + removeInstance
-                ret
+                let hubPath = binding.getHub().path()
+                let kmfChannel = context.CurrentModel.findByPath(hubPath)
+                if kmfChannel <> null then
+                    let kmfNewChan = context.TargetModel.findByPath(hubPath)
+                    (* We check if the channel still exists in the new channel. 
+                    If it does not, it can be removed.
+                    If it does, we check if it still has relationships with our node. It it does not we can safely remove the framgment on the channel in our node. *)
+                    let existBinding =  if kmfNewChan <> null then List.exists (fun (a:IMBindingMarshalled) -> isRelatedToPlatform(a.CastToKFMContainer(),context)) (List.ofArray (kmfNewChan.CastToChannel().getBindings().ToArray())) else false
+                    let oldChannel = context.CurrentModel.findByPath(binding.getHub().path())
+                    let removeInstance  = if (not existBinding) && context.ModelRegistry.ContainsKey(oldChannel.path()) then set [{Type=AdaptationType.RemoveInstance; NodePath=""; Ref=binding.getHub().CastToKFMContainer(); Ref2=None}] else set []
+                    let stopChannel = if (not existBinding) && binding.getHub().getStarted() then set [{Type=AdaptationType.StopInstance; NodePath=""; Ref=oldChannel.CastToKFMContainer(); Ref2=None}] else set []
+                    let removeBinding = if isRelatedToPlatform(binding.CastToKFMContainer(), context) then set [{Type=AdaptationType.RemoveBinding; NodePath=""; Ref=binding.CastToKFMContainer(); Ref2=None}] else set []
+                    removeBinding + stopChannel + removeInstance
+                else set []
             else set []
         else set []
 

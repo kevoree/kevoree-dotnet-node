@@ -11,6 +11,9 @@ type PortOutput(name:string, path:string) =
     let mutable channels:List<IComponentRunner> = new List<IComponentRunner>();
 
     member this.registerChannel(channel:IComponentRunner):unit = channels.Add(channel)    
+    member this.detachChannel(channel:IComponentRunner):unit =
+        let _ = channels.Remove(channel)
+        ()
 
     interface Port with
         member this.send (payload:string, callback:Callback):unit = 

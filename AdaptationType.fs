@@ -22,13 +22,16 @@ module AdaptationType =
             member this.CompareTo  yobj =
                 match yobj with
                 | :? AdaptationFS as y -> 
+                    let thisCodeRef1 = if this.Ref <> null then this.Ref.ToString() else ""
+                    let thatCodeRef1 = if y.Ref <> null then y.Ref.ToString() else ""
+
                     let thisCodeRef2 = match this.Ref2 with
                         | None -> ""
                         | Some(x) -> x.ToString()
                     let thatCodeRef2 = match y.Ref2 with
                         | None -> ""
                         | Some(x) -> x.ToString()
-                    let cmp = compare (this.Type, this.Ref.ToString(), thisCodeRef2) (y.Type, y.Ref.ToString(), thatCodeRef2)
+                    let cmp = compare (this.Type, thisCodeRef1, thisCodeRef2) (y.Type, thatCodeRef1, thatCodeRef2)
                     cmp
                 | _ -> invalidArg "yobj" "cannot compare values of different types"
 

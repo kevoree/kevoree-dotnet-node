@@ -58,9 +58,10 @@
     <Compile Include="AdaptationType.fs" />
     <Compile Include="AddDeployUnitCommand.fs" />
     <Compile Include="AddInstanceCommand.fs" />
-    <Compile Include="RemoveBindingCommand.fs" />
     <Compile Include="PortInput.fs" />
     <Compile Include="PortOutput.fs" />
+    <Compile Include="BindingsOperations.fs" />
+    <Compile Include="RemoveBindingCommand.fs" />
     <Compile Include="AddBindingCommand.fs" />
     <Compile Include="StartStopInstanceCommand.fs" />
     <Compile Include="RemoveDeployUnitCommand.fs" />
