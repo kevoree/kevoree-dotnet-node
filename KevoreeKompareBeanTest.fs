@@ -49,7 +49,7 @@ module Test =
             let modelCompare = dkf.createModelCompare();
             let nodeName = "node0"
             let traces = modelCompare.diff(tmp1, tmp2)
-            let result:Org.Kevoree.Core.Api.Adaptation.AdaptationModel = plan file1  file2  nodeName (new Org.Kevoree.Core.TracesMarshalled(traces))
+            let result:Org.Kevoree.Core.Api.Adaptation.AdaptationModel = plan file1  file2  nodeName (new Org.Kevoree.Core.TracesMarshalled(traces)) (new System.Collections.Generic.Dictionary<string, obj>())
             let expected:Org.Kevoree.Core.Api.Adaptation.AdaptationModel = new Org.Kevoree.Core.Api.Adaptation.AdaptationModel();
             //expected.Add(new AdaptationPrimitive())
             //let _ =  CollectionAssert.AreEqual(expected, result)
@@ -66,12 +66,31 @@ module Test =
             let modelCompare = dkf.createModelCompare();
             let nodeName = "node848"
             let traces = modelCompare.diff(tmp1, tmp2)
-            let result:Org.Kevoree.Core.Api.Adaptation.AdaptationModel = plan file1  file2  nodeName (new Org.Kevoree.Core.TracesMarshalled(traces))
+            let result:Org.Kevoree.Core.Api.Adaptation.AdaptationModel = plan file1  file2  nodeName (new Org.Kevoree.Core.TracesMarshalled(traces)) (new System.Collections.Generic.Dictionary<string, obj>())
             printfn "%s" (result.ToString())
             let expected:Org.Kevoree.Core.Api.Adaptation.AdaptationModel = new Org.Kevoree.Core.Api.Adaptation.AdaptationModel();
             //expected.Add(new AdaptationPrimitive())
             //let _ =  CollectionAssert.AreEqual(expected, result)
             () 
+
+        [<Test>]
+        member this.TwoTickerConsoleLocalchanRemotegroup() = 
+            let factory = DefaultKevoreeFactory()
+            let tmp1 = factory.createJSONLoader().loadModelFromStream(new FileInputStream(@"C:\Users\mleduc\Documents\Visual Studio 2013\Projects\Solution1\testData\ticker-console-localchan-remotegroup.json")).get(0) :?> ContainerRoot
+            let file1 = new Org.Kevoree.Core.Marshalled.ContainerRootMarshalled(tmp1)
+            let tmp2 = factory.createJSONLoader().loadModelFromStream(new FileInputStream(@"C:\Users\mleduc\Documents\Visual Studio 2013\Projects\Solution1\testData\2ticker-console-localchan-remotegroup.json")).get(0) :?> ContainerRoot;
+            let file2 = new Org.Kevoree.Core.Marshalled.ContainerRootMarshalled(tmp2)
+            let dkf = new DefaultKevoreeFactory();
+            let modelCompare = dkf.createModelCompare();
+            let nodeName = "node848"
+            let traces = modelCompare.diff(tmp1, tmp2)
+            let result:Org.Kevoree.Core.Api.Adaptation.AdaptationModel = plan file1  file2  nodeName (new Org.Kevoree.Core.TracesMarshalled(traces)) (new System.Collections.Generic.Dictionary<string, obj>())
+            printfn "%s" (result.ToString())
+            let expected:Org.Kevoree.Core.Api.Adaptation.AdaptationModel = new Org.Kevoree.Core.Api.Adaptation.AdaptationModel();
+            //expected.Add(new AdaptationPrimitive())
+            //let _ =  CollectionAssert.AreEqual(expected, result)
+            () 
+
         [<Test>]
         member this.AddOneInstance() = 
             let factory = DefaultKevoreeFactory()
@@ -83,7 +102,7 @@ module Test =
             let modelCompare = dkf.createModelCompare();
             let nodeName = "node0"
             let traces = modelCompare.diff(tmp1, tmp2)
-            let result:Org.Kevoree.Core.Api.Adaptation.AdaptationModel = plan file1  file2  nodeName (new Org.Kevoree.Core.TracesMarshalled(traces))
+            let result:Org.Kevoree.Core.Api.Adaptation.AdaptationModel = plan file1  file2  nodeName (new Org.Kevoree.Core.TracesMarshalled(traces)) (new System.Collections.Generic.Dictionary<string, obj>())
             let expected:Org.Kevoree.Core.Api.Adaptation.AdaptationModel = new Org.Kevoree.Core.Api.Adaptation.AdaptationModel();
             //expected.Add(new AdaptationPrimitive())
        //     let _ =  CollectionAssert.AreEqual(expected, result)
@@ -100,7 +119,7 @@ module Test =
             let modelCompare = dkf.createModelCompare();
             let nodeName = "node0"
             let traces = modelCompare.diff(tmp1, tmp2)
-            let result:Org.Kevoree.Core.Api.Adaptation.AdaptationModel = plan file1  file2  nodeName (new Org.Kevoree.Core.TracesMarshalled(traces))
+            let result:Org.Kevoree.Core.Api.Adaptation.AdaptationModel = plan file1  file2  nodeName (new Org.Kevoree.Core.TracesMarshalled(traces)) (new System.Collections.Generic.Dictionary<string, obj>())
             let expected:Org.Kevoree.Core.Api.Adaptation.AdaptationModel = new Org.Kevoree.Core.Api.Adaptation.AdaptationModel();
             //expected.Add(new AdaptationPrimitive())
        //     let _ =  CollectionAssert.AreEqual(expected, result)
@@ -117,7 +136,7 @@ module Test =
             let modelCompare = dkf.createModelCompare();
             let nodeName = "node0"
             let traces = modelCompare.diff(tmp1, tmp2)
-            let result:Org.Kevoree.Core.Api.Adaptation.AdaptationModel = plan file1  file2  nodeName (new Org.Kevoree.Core.TracesMarshalled(traces))
+            let result:Org.Kevoree.Core.Api.Adaptation.AdaptationModel = plan file1  file2  nodeName (new Org.Kevoree.Core.TracesMarshalled(traces)) (new System.Collections.Generic.Dictionary<string, obj>())
             let expected:Org.Kevoree.Core.Api.Adaptation.AdaptationModel = new Org.Kevoree.Core.Api.Adaptation.AdaptationModel();
             //expected.Add(new AdaptationPrimitive())
         //    let _ =  CollectionAssert.AreEqual(expected, result)
@@ -137,7 +156,7 @@ module Test =
             let modelCompare = dkf.createModelCompare();
             let nodeName = "node0"
             let traces = modelCompare.diff(tmp1, tmp2)
-            let result:Org.Kevoree.Core.Api.Adaptation.AdaptationModel = plan file1  file2  nodeName (new Org.Kevoree.Core.TracesMarshalled(traces))
+            let result:Org.Kevoree.Core.Api.Adaptation.AdaptationModel = plan file1  file2  nodeName (new Org.Kevoree.Core.TracesMarshalled(traces)) (new System.Collections.Generic.Dictionary<string, obj>())
             let expected:Org.Kevoree.Core.Api.Adaptation.AdaptationModel = new Org.Kevoree.Core.Api.Adaptation.AdaptationModel();
             //expected.Add(new AdaptationPrimitive())
        //     let _ =  CollectionAssert.AreEqual(expected, result)
@@ -154,7 +173,7 @@ module Test =
             let modelCompare = dkf.createModelCompare();
             let nodeName = "node0"
             let traces = modelCompare.diff(tmp1, tmp2)
-            let result:Org.Kevoree.Core.Api.Adaptation.AdaptationModel = plan file1  file2  nodeName (new Org.Kevoree.Core.TracesMarshalled(traces))
+            let result:Org.Kevoree.Core.Api.Adaptation.AdaptationModel = plan file1  file2  nodeName (new Org.Kevoree.Core.TracesMarshalled(traces)) (new System.Collections.Generic.Dictionary<string, obj>())
             let expected:Org.Kevoree.Core.Api.Adaptation.AdaptationModel = new Org.Kevoree.Core.Api.Adaptation.AdaptationModel();
             //expected.Add(new AdaptationPrimitive())
         //    let _ =  CollectionAssert.AreEqual(expected, result)

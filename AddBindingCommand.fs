@@ -1,18 +1,19 @@
 ﻿namespace Org.Kevoree.Library
 
 open Org.Kevoree.Log.Api
+open Org.Kevoree.Library.AdaptationType
 
-type AddBindingCommand(c:Org.Kevoree.Core.Api.IMarshalled.IMBindingMarshalled, nodeName:string, registry:ModelRegistry, nodePath:string ,logger:ILogger) =
+type AddBindingCommand(c:Org.Kevoree.Core.Api.IMarshalled.IMBindingMarshalled, nodeName:string, registryManager:Org.Kevoree.Library.AdaptationType.RegistryManager, nodePath:string ,logger:ILogger) =
     inherit System.MarshalByRefObject()
 
     interface Org.Kevoree.Core.Api.Command.ICommand with
         member this.Execute() =
             logger.Debug("Executed AddBinding")
             let chanPath = c.getHub().path()
-            let chanInstance = registry.[chanPath] :?> Org.Kevoree.Core.Api.IComponentRunner
+            let chanInstance = registryManager.QueryRegistry(chanPath) :?> Org.Kevoree.Core.Api.IComponentRunner
             if chanInstance <> null then
                 let compPath = c.getPort().eContainer().path()
-                let compInstance:Org.Kevoree.Core.Api.IComponentRunner = registry.[compPath] :?> Org.Kevoree.Core.Api.IComponentRunner
+                let compInstance:Org.Kevoree.Core.Api.IComponentRunner = registryManager.QueryRegistry(compPath) :?> Org.Kevoree.Core.Api.IComponentRunner
                 if compInstance <> null then
                     let portPath = c.getPort().path()
 
@@ -24,46 +25,27 @@ type AddBindingCommand(c:Org.Kevoree.Core.Api.IMarshalled.IMBindingMarshalled, n
                     if provided <> null then 
                         (* Input case *)
                         logger.Debug("Add an input in AddBinding Command")
-                        let portInput:PortInput = if registry.ContainsKey(portPath) then
-                                                        registry.[c.getPort().path()] :?> PortInput
+                        let portInput:PortInput = if registryManager.Lookup(portPath) then
+                                                        registryManager.QueryRegistry(c.getPort().path()) :?> PortInput
                                                     else 
-                                                        let p:PortInput = new PortInput( c.getPort().getName(), c.getPort().path(), chanInstance)
-                                                        registry.Add(c.getPort().path(), p)
+                                                        let p:PortInput = new PortInput( c.getPort().getName(), c.getPort().path(), compInstance)
+                                                        let portPath = c.getPort().path()
+                                                        registryManager.SaveToModel(portPath,p)
                                                         p
-                        portInput.registerComponent(compInstance, c.getPort().getName())
+                        // todo : enregistrer le port input dans le channel
+                        chanInstance.attachInputPort(portInput, c.getPort().getName());
                         true
                     else
+                        (* Output case *)
                         logger.Debug("Add an ouput in AddBinding Command")
-                        let portOutput:PortOutput = if registry.ContainsKey(portPath) then
-                                                        registry.[c.getPort().path()] :?> PortOutput
+                        let portOutput:PortOutput = if registryManager.Lookup portPath then
+                                                        registryManager.QueryRegistry(c.getPort().path()) :?> PortOutput
                                                     else 
-                                                        let methodName = ""
-                                                        let p:PortOutput = new PortOutput(c.getPort().getName(), c.getPort().path(), compInstance :?> Org.Kevoree.Core.Api.ChannelDispatch, c.getPort().getName())
-                                                        registry.Add(c.getPort().path(), p)
+                                                        let p:PortOutput = new PortOutput(c.getPort().getName(), c.getPort().path())
+                                                        registryManager.SaveToModel (c.getPort().path(),  p)
                                                         p
-                        compInstance.attacheOutputPort(portOutput, c.getPort().getName())
-                        (*
-                        
-                        TODO : Deal with PortOutput
-                        1 - inject to a component field
-                        2 - register every channel into the port
-                        3 - Implement business code in each Port type
-
-                        compInstance.addInternalOutputPort(portInstance)
-
-                        let bindings = c.getHub().getBindings();
-                        for binding in bindings do
-                            if binding <> c then
-                                let provided = binding.getPort().eContainer().CastToComponentInstance().findProvidedByID(binding.getPort().getName())
-                                if provided <> null then
-                                    let portInstance:PortImpl = if registry.ContainsKey(provided.path()) then 
-                                                                    registry.[provided.path()] :?> PortImpl
-                                                                else
-                                                                    let tmp = new PortImpl(provided.getName(), provided.path())
-                                                                    registry.Add(provided.path(), tmp)
-                                                                    tmp
-                                    chanInstance.addInternalInputPort(portInstance)
-                          *)    
+                        portOutput.registerChannel(chanInstance);
+                        compInstance.attachOutputPort(portOutput, c.getPort().getName())
                         true
                 else
                     (*if c.getPort().eContainer().path() = nodeName then
@@ -81,7 +63,7 @@ type AddBindingCommand(c:Org.Kevoree.Core.Api.IMarshalled.IMBindingMarshalled, n
                 false
         member this.Undo() = 
             logger.Debug("Undo AddBinding")
-            let cmd = new RemoveBindingCommand(c, nodeName, registry, logger)
+            let cmd = new RemoveBindingCommand(c, nodeName, registryManager, logger)
             let _ = (cmd :>  Org.Kevoree.Core.Api.Command.ICommand).Execute()
             ()
         member this.Name() = sprintf "[AddBinding nodeName=%s]" nodeName

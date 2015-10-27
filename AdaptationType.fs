@@ -35,4 +35,10 @@ module AdaptationType =
 
     type AdaptationModelFS = Set<AdaptationFS>
 
-    type ModelRegistry = Map<string,obj>
+    type ModelRegistry = System.Collections.Generic.Dictionary<string,obj>
+
+    type RegistryManager =
+        abstract member Lookup: string -> bool
+        abstract member SaveToModel:string * obj -> unit
+        abstract member RemoveFromRegistry:string -> unit
+        abstract member QueryRegistry: string -> obj

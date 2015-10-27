@@ -22,7 +22,7 @@ type DotnetNode =
         
         [<KevoreeInject>] val mutable logger : Org.Kevoree.Log.Api.ILogger
 
-        val mutable modelRegistry:ModelRegistry
+        val mutable modelRegistry:Org.Kevoree.Library.AdaptationType.ModelRegistry
 
         [<Start>]
         member this.Start() =
@@ -44,9 +44,19 @@ type DotnetNode =
             member this.preRollback(context: UpdateContext): unit = ()
             member this.postRollback(context: UpdateContext): unit = ()
 
+        interface  Org.Kevoree.Library.AdaptationType.RegistryManager with
+            member this.Lookup(key) = this.modelRegistry.ContainsKey key
+            member this.SaveToModel(key, value) =
+                let _ = this.modelRegistry.Add(key, value)
+                ()
+            member this.RemoveFromRegistry(key) =
+                let _ = this.modelRegistry.Remove(key)
+                ()
+            member this.QueryRegistry(key) = this.modelRegistry.[key]
+
         interface Org.Kevoree.Core.Api.NodeType with
             member this.plan(actualModel: IContainerRootMarshalled, targetModel:IContainerRootMarshalled, traces:ITracesSequence): AdaptationModel =
-                let result = plan actualModel targetModel (this.modelService.getNodeName()) traces
+                let result = plan actualModel targetModel (this.modelService.getNodeName()) traces this.modelRegistry
                 this.logger.Debug(result.ToString());
                 result
 
@@ -67,28 +77,31 @@ type DotnetNode =
                 | Org.Kevoree.Core.Api.AdaptationType.UpdateDictionary -> 
                     let inst = primitive.getRef().CastToInstance()
                     let value = primitive.getRef2().CastToValue()
-                    new UpdateDictionaryCommand(inst, value, nodeName, this.modelRegistry, this.bootstrapService, this.modelService, this.logger) :> Org.Kevoree.Core.Api.Command.ICommand
+                    new UpdateDictionaryCommand(inst, value, nodeName, this, this.bootstrapService, this.modelService, this.logger) :> Org.Kevoree.Core.Api.Command.ICommand
                 | Org.Kevoree.Core.Api.AdaptationType.AddInstance ->
                     let inst = primitive.getRef().CastToInstance()
-                    new AddInstanceCommand(inst, nodeName, this.modelRegistry, this.bootstrapService, this.modelService, this.logger) :> Org.Kevoree.Core.Api.Command.ICommand
+                    new AddInstanceCommand(inst, nodeName, this, this.bootstrapService, this.modelService, this.logger) :> Org.Kevoree.Core.Api.Command.ICommand
                 | Org.Kevoree.Core.Api.AdaptationType.RemoveInstance ->
                     let inst = primitive.getRef().CastToInstance()
-                    new RemoveInstanceCommand(inst, nodeName, this.modelRegistry, this.bootstrapService, this.modelService, this.logger) :> Org.Kevoree.Core.Api.Command.ICommand
+                    new RemoveInstanceCommand(inst, nodeName, this, this.bootstrapService, this.modelService, this.logger) :> Org.Kevoree.Core.Api.Command.ICommand
                 | Org.Kevoree.Core.Api.AdaptationType.AddBinding ->
                     let bind = primitive.getRef().CastToMBinding()
-                    new AddBindingCommand(bind, nodeName, this.modelRegistry, nodePath, this.logger) :> Org.Kevoree.Core.Api.Command.ICommand
+                    new AddBindingCommand(bind, nodeName, this, nodePath, this.logger) :> Org.Kevoree.Core.Api.Command.ICommand
                 | Org.Kevoree.Core.Api.AdaptationType.RemoveBinding -> 
                     let bind = primitive.getRef().CastToMBinding()
-                    new RemoveBindingCommand(bind, nodeName, this.modelRegistry, this.logger) :> Org.Kevoree.Core.Api.Command.ICommand
+                    new RemoveBindingCommand(bind, nodeName, this, this.logger) :> Org.Kevoree.Core.Api.Command.ICommand
                 | Org.Kevoree.Core.Api.AdaptationType.StartInstance ->
                     let inst = primitive.getRef().CastToInstance()
-                    new StartStopInstanceCommand(inst, nodeName, true, this.modelRegistry, this.bootstrapService, this.logger) :> Org.Kevoree.Core.Api.Command.ICommand
+                    new StartStopInstanceCommand(inst, nodeName, true, this, this.bootstrapService, this.logger) :> Org.Kevoree.Core.Api.Command.ICommand
                 | Org.Kevoree.Core.Api.AdaptationType.StopInstance ->
                     let inst = primitive.getRef().CastToInstance()
-                    new StartStopInstanceCommand(inst, nodeName, false, this.modelRegistry, this.bootstrapService, this.logger) :> Org.Kevoree.Core.Api.Command.ICommand
+                    new StartStopInstanceCommand(inst, nodeName, false, this, this.bootstrapService, this.logger) :> Org.Kevoree.Core.Api.Command.ICommand
+
 
             member this.Start():unit = ()
         inherit System.MarshalByRefObject        
+
+       
     end
     
 type DotnetNode with
@@ -98,5 +111,5 @@ type DotnetNode with
         context = null
         logLevel = "DEBUG"
         logger = null
-        modelRegistry = new ModelRegistry()
+        modelRegistry =  new System.Collections.Generic.Dictionary<string, obj>()
     }

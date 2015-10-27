@@ -55,7 +55,7 @@
   <Import Project="$(FSharpTargetsPath)" />
   <ItemGroup>
     <None Include="App.config" />
-    <Compile Include="ModelRegistry.fs" />
+    <Compile Include="AdaptationType.fs" />
     <Compile Include="AddDeployUnitCommand.fs" />
     <Compile Include="AddInstanceCommand.fs" />
     <Compile Include="RemoveBindingCommand.fs" />
@@ -65,7 +65,6 @@
     <Compile Include="StartStopInstanceCommand.fs" />
     <Compile Include="RemoveDeployUnitCommand.fs" />
     <Compile Include="RemoveInstanceCommand.fs" />
-    <Compile Include="AdaptationType.fs" />
     <Compile Include="KevoreeKompareBean.fs" />
     <Compile Include="NullCommand.fs" />
     <Compile Include="UpdateDictionaryCommand.fs" />

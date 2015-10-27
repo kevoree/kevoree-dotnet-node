@@ -192,7 +192,7 @@ module KevoreeKompareBean =
         am
 
 
-    let plan:IContainerRootMarshalled -> IContainerRootMarshalled -> string -> Org.Kevoree.Core.Api.ITracesSequence -> Org.Kevoree.Core.Api.Adaptation.AdaptationModel = fun current target nodeName traces ->         
+    let plan:IContainerRootMarshalled -> IContainerRootMarshalled -> string -> Org.Kevoree.Core.Api.ITracesSequence -> Org.Kevoree.Library.AdaptationType.ModelRegistry -> Org.Kevoree.Core.Api.Adaptation.AdaptationModel = fun current target nodeName traces registry ->         
         let asdf = traces.GetTraces() |> List.ofSeq;
         let context = {
             NodeName = nodeName;
@@ -200,6 +200,6 @@ module KevoreeKompareBean =
             TargetModel = target;
             CurrentNode = current.findNodesByID(nodeName);
             CurrentModel = current;
-            ModelRegistry = Map.empty }
+            ModelRegistry = registry }
         let result:AdaptationModelFS = List.fold (traceToAdaptation context) Set.empty asdf
         convert result
