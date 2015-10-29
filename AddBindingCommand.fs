@@ -3,7 +3,7 @@
 open Org.Kevoree.Log.Api
 open Org.Kevoree.Library.AdaptationType
 
-type AddBindingCommand(c:Org.Kevoree.Core.Api.IMarshalled.IMBindingMarshalled, nodeName:string, registryManager:Org.Kevoree.Library.AdaptationType.RegistryManager, nodePath:string ,logger:ILogger) =
+type AddBindingCommand(c:Org.Kevoree.Core.Api.IMarshalled.IMBindingMarshalled, nodeName:string, registryManager:Org.Kevoree.Library.AdaptationType.RegistryManager, logger:ILogger) =
     inherit System.MarshalByRefObject()
 
     interface Org.Kevoree.Core.Api.Command.ICommand with

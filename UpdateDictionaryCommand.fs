@@ -23,7 +23,7 @@ type UpdateDictionaryCommand(c:IInstanceMarshalled, dicValue:IValueMarshalled, n
                     ()
                     
                 true
-            else false
+            else true
         member this.Undo() = 
             logger.Debug("Undo UpdateDictionay")
             ()

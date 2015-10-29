@@ -23,7 +23,9 @@ module KevoreeKompareBean =
     let rec isRelatedToPlatform(element: IKMFContainerMarshalled, context:Context):bool = 
         if element.isOfType(typedefof<ComponentInstance>) then
             let a = element.CastToComponentInstance()
-            if a.eContainer().isOfType(typedefof<ContainerNode>) then a.eContainer().CastToContainerNode().getName() = context.CurrentNode.getName() else false
+            let cn = a.eContainer().CastToContainerNode()
+            let currn = context.CurrentNode
+            if a.eContainer().isOfType(typedefof<ContainerNode>) then cn.getName() = currn.getName() else false
         elif element.isOfType(typedefof<Channel>) then
             element.CastToChannel().getBindings().Exists (
                 fun binding ->  (binding.getPort() <> null) && (binding.getPort().eContainer() <> null) && (isRelatedToPlatform(binding.getPort().eContainer().CastToKFMContainer(), context))
@@ -31,8 +33,8 @@ module KevoreeKompareBean =
             //TODO : continuer à implanter cette partie du comparateur en se basant sur https://github.com/kevoree/kevoree-js-node-javascript/blob/eb8abc7d20e7e52a87a86301e4af50e5b62d63fc/lib/AdaptationEngine.js
         elif element.isOfType(typedefof<Group>) then element.CastToGroup().getName() = context.CurrentNode.getName()
         elif element.isOfType(typedefof<ContainerNode>) then 
-            let containerNode = element.CastToContainerNode()
-            ((containerNode.getName() = context.CurrentNode.getName()) || (containerNode.getHost() <> null && containerNode.getHost().getName() = context.CurrentNode.getName()))
+            let containerNodez:IContainerNodeMarshalled = element.CastToContainerNode()
+            ((containerNodez.getName() = context.CurrentNode.getName()) || (containerNodez.getHost() <> null && containerNodez.getHost().getName() = context.CurrentNode.getName()))
         elif element.isOfType(typedefof<MBinding>) then
             let mbinding = element.CastToMBinding()
             (mbinding.getPort() <> null && mbinding.getPort().eContainer() <> null && isRelatedToPlatform(mbinding.getPort().eContainer(), context)) || (mbinding.getHub() <> null && isRelatedToPlatform(mbinding.getHub().CastToKFMContainer(), context))
@@ -73,7 +75,7 @@ module KevoreeKompareBean =
                 let addBinding = set[ { Type = AdaptationType.AddBinding; NodePath=""; Ref=binding.CastToKFMContainer(); Ref2=None}]
                 let channel = binding.getHub()
                 (* if we have a bind we check if our local registry already contains a simmilar node and if it does not, we add it *)
-                let addInstance =   if (channel <> null && not (context.ModelRegistry.ContainsKey(channel.path())))
+                let addInstance =   if (channel <> null && isRelatedToPlatform(binding.CastToKFMContainer(), context) && not (context.ModelRegistry.ContainsKey(channel.path())))
                                     then 
                                         let ref = channel.CastToKFMContainer()
                                         let addInstanceInner = set [{Type=AdaptationType.AddInstance; NodePath=""; Ref=ref; Ref2=None }]
@@ -111,7 +113,7 @@ module KevoreeKompareBean =
         let modelElement:IKMFContainerMarshalled = context.TargetModel.findByPath(srcPath)
         if modelElement.isOfType(typedefof<Instance>) && trace.isOfType(typedefof<ModelSetTrace>)
         then
-            let instanceElement = modelElement.CastToInstance()
+            //let instanceElement = modelElement.CastToInstance()
             if modelElement.eContainer().isOfType(typedefof<ContainerNode>) && not (modelElement.eContainer().path() = context.TargetNode.path())
             then set []
             else
@@ -121,7 +123,7 @@ module KevoreeKompareBean =
                     if trace.getModelSetTrace().getContent().ToLower() = "true"
                     then 
                         let start = set [{ Type =  AdaptationType.StartInstance; NodePath = context.TargetNode.path(); Ref = modelElement; Ref2 = None }]
-                        let kDict = instanceElement.getDictionary();
+                        (*let kDict = instanceElement.getDictionary();
                         let values = if kDict <> null then kDict.getValues() else null
                         let dicti = if values <> null
                                     then Array.map (fun (e:IValueMarshalled) -> {Type = AdaptationType.UpdateDictionary; NodePath = context.TargetNode.path(); Ref = instanceElement.CastToKFMContainer(); Ref2 = Some(e.CastToKFMContainer()) }) (values.ToArray()) |> Set.ofArray
@@ -130,8 +132,8 @@ module KevoreeKompareBean =
                         let dictj = if values <> null
                                     then Array.map (fun (e:IValueMarshalled) -> {Type = AdaptationType.UpdateDictionary; NodePath = context.TargetNode.path(); Ref = instanceElement.CastToKFMContainer(); Ref2 = Some(e.CastToKFMContainer()) }) (values.ToArray()) |> Set.ofArray
                                     else set []
-                        // TODO : peut être utile ici de filtrer les mises à jours inutiles, c'est à dire les update de valeurs qui n'ont pas changées dans le temps.
-                        start + dicti
+                        // TODO : peut être utile ici de filtrer les mises à jours inutiles, c'est à dire les update de valeurs qui n'ont pas changées dans le temps.*)
+                        start // + dicti
                     else set [{ 
                                 Type = AdaptationType.StopInstance; 
                                 NodePath = context.TargetNode.path()
@@ -141,7 +143,8 @@ module KevoreeKompareBean =
     let traceToAdaptationIgnored:TraceToAdaptation = fun trace context -> set []
 
     let traceToAdaptationTypeValue:TraceToAdaptation = fun trace context ->
-        let modelElement = context.TargetModel.findByPath(trace.getSrcPath())
+        let traceSrcPath = trace.getSrcPath()
+        let modelElement = context.TargetModel.findByPath(traceSrcPath)
         let c1 = modelElement.isOfType(typedefof<Value>);
         let refInParent = modelElement.getRefInParent()
         let c2 = refInParent = "values"
@@ -155,9 +158,10 @@ module KevoreeKompareBean =
             then set []
             else 
                 let dictionaryParent = modelElement.eContainer()
-                if dictionaryParent <> null
+                
+                if (dictionaryParent <> null
                     && dictionaryParent.isOfType(typedefof<FragmentDictionary>)
-                    && dictionaryParent.CastToFragmentDictionary().getName() <> context.NodeName
+                    && dictionaryParent.CastToFragmentDictionary().getName() <> context.NodeName) 
                 then set []
                 else 
                     // TODO : a quoi sers le path ?
@@ -202,7 +206,7 @@ module KevoreeKompareBean =
             NodeName = nodeName;
             TargetNode = target.findNodesByID(nodeName);
             TargetModel = target;
-            CurrentNode = current.findNodesByID(nodeName);
+            CurrentNode = if current.findNodesByID(nodeName) <> null then current.findNodesByID(nodeName) else target.findNodesByID(nodeName);
             CurrentModel = current;
             ModelRegistry = registry }
         let result:AdaptationModelFS = List.fold (traceToAdaptation context) Set.empty asdf

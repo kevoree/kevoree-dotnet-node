@@ -65,7 +65,6 @@ type DotnetNode =
                 *)
             member this.getPrimitive(primitive: AdaptationPrimitive): Org.Kevoree.Core.Api.Command.ICommand =
                 let nodeName = this.modelService.getNodeName()
-                let nodePath = this.modelService.getCurrentModel().getModel().findNodesByID(nodeName).path()
                 match primitive.getType() with
                 | Org.Kevoree.Core.Api.AdaptationType.AddDeployUnit ->
                     let deployUnit = primitive.getRef().CastToDeployUnit()
@@ -86,7 +85,7 @@ type DotnetNode =
                     new RemoveInstanceCommand(inst, nodeName, this, this.bootstrapService, this.modelService, this.logger) :> Org.Kevoree.Core.Api.Command.ICommand
                 | Org.Kevoree.Core.Api.AdaptationType.AddBinding ->
                     let bind = primitive.getRef().CastToMBinding()
-                    new AddBindingCommand(bind, nodeName, this, nodePath, this.logger) :> Org.Kevoree.Core.Api.Command.ICommand
+                    new AddBindingCommand(bind, nodeName, this,  this.logger) :> Org.Kevoree.Core.Api.Command.ICommand
                 | Org.Kevoree.Core.Api.AdaptationType.RemoveBinding -> 
                     let bind = primitive.getRef().CastToMBinding()
                     new RemoveBindingCommand(bind, nodeName, this, this.logger) :> Org.Kevoree.Core.Api.Command.ICommand
