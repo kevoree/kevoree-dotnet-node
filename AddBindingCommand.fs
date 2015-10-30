@@ -9,7 +9,7 @@ type AddBindingCommand(c:Org.Kevoree.Core.Api.IMarshalled.IMBindingMarshalled, n
     interface Org.Kevoree.Core.Api.Command.ICommand with
         member this.Execute() =
             logger.Debug("Executed AddBinding")
-            Org.Kevoree.Library.BindingsOperations.AddBinding c logger registryManager
+            Org.Kevoree.Library.BindingsOperations.AddBinding c logger registryManager nodeName
         member this.Undo() = 
             logger.Debug("Undo AddBinding")
             let _ = Org.Kevoree.Library.BindingsOperations.RemoveBinding c logger registryManager
