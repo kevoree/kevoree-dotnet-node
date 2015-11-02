@@ -14,9 +14,12 @@ type AddInstanceCommand(c:IInstanceMarshalled, nodeName:string, registryManager:
             logger.Debug("Execute AddInstance")
             let path = c.path()
             if not (registryManager.Lookup path) then 
-                let typeDef = c.GetTypeDefinition()
-                let version = typeDef.getVersion()
-                let name = typeDef.getName()
+                let a = c.GetTypeDefinition().getDeployUnits().FindAll(fun x -> x.findFiltersByID("platform").getValue() = "dotnet")
+                a.Sort(fun a b -> Semver.SemVersion.Parse(a.getVersion()).CompareTo(Semver.SemVersion.Parse(b.getVersion())))
+                let du:IDeployUnitMarshalled = a.[0]
+                logger.Debug(du.getVersion() + " selected")
+                let version = du.getVersion()
+                let name = du.getName()
                 logger.Debug("Execute AddInstance : " + name + ":" + version)
                 let instance = bs.LoadSomething(name, version, c.path());
                 registryManager.SaveToModel(path, instance)

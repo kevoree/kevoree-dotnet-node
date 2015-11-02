@@ -15,8 +15,8 @@ module AdaptationType =
 
         override this.ToString() = 
             let ref2str = match this.Ref2 with
-                | Some(x) -> x.path()
-                | None -> ""
+                                            | Some(x) -> x.path()
+                                            | None -> ""
             "AdaptationTypeFS [Type = " + this.Type.ToString() + "; RefPath = " + this.Ref.path() + "; Ref2Path = " + ref2str + "]\n"
         interface System.IComparable with
             member this.CompareTo  yobj =
@@ -26,11 +26,11 @@ module AdaptationType =
                     let thatCodeRef1 = if y.Ref <> null then y.Ref.ToString() else ""
 
                     let thisCodeRef2 = match this.Ref2 with
-                        | None -> ""
-                        | Some(x) -> x.ToString()
+                                                        | None -> ""
+                                                        | Some(x) -> x.ToString()
                     let thatCodeRef2 = match y.Ref2 with
-                        | None -> ""
-                        | Some(x) -> x.ToString()
+                                                        | None -> ""
+                                                        | Some(x) -> x.ToString()
                     let cmp = compare (this.Type, thisCodeRef1, thisCodeRef2) (y.Type, thatCodeRef1, thatCodeRef2)
                     cmp
                 | _ -> invalidArg "yobj" "cannot compare values of different types"

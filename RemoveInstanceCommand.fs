@@ -24,6 +24,6 @@ type RemoveInstanceCommand(c:IInstanceMarshalled, nodeName:string, registryManag
             if registryManager.Lookup path
             then ()
             else
-                (new AddInstanceCommand(c, nodeName, registryManager, bs, modelService, logger) :> Org.Kevoree.Core.Api.Command.ICommand ).Execute()
+                let _ = (new AddInstanceCommand(c, nodeName, registryManager, bs, modelService, logger) :> Org.Kevoree.Core.Api.Command.ICommand ).Execute()
                 ()
         member this.Name() = sprintf "[RemoveInstance nodeName=%s]" nodeName

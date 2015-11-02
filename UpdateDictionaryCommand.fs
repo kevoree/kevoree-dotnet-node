@@ -14,12 +14,12 @@ type UpdateDictionaryCommand(c:IInstanceMarshalled, dicValue:IValueMarshalled, n
                 let attributeDefinition = dicValue.eContainer().eContainer().CastToInstance().GetTypeDefinition().getDictionaryType().findAttributesByID(dicValue.getName())
                 if typedefof<Org.Kevoree.Core.Api.IRunner>.IsAssignableFrom(registryManager.QueryRegistry(path).GetType()) then
                     let componentz = registryManager.QueryRegistry(path) :?> Org.Kevoree.Core.Api.IRunner
-                    componentz.updateDictionary(attributeDefinition, dicValue)
+                    let _ = componentz.updateDictionary(attributeDefinition, dicValue)
                     ()
                 else
                     let componentz:Org.Kevoree.Core.Api.NodeType = registryManager.QueryRegistry(path) :?> Org.Kevoree.Core.Api.NodeType
                     let injector:Org.Kevoree.Library.Annotation.KevoreeInjector<Org.Kevoree.Annotation.Param> = new Org.Kevoree.Library.Annotation.KevoreeInjector<Org.Kevoree.Annotation.Param>();
-                    injector.smartInject(componentz, attributeDefinition.getName(), attributeDefinition.getDatatype(), dicValue.getValue())
+                    let _ = injector.smartInject(componentz, attributeDefinition.getName(), attributeDefinition.getDatatype(), dicValue.getValue())
                     ()
                     
                 true

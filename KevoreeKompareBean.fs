@@ -188,15 +188,16 @@ module KevoreeKompareBean =
         ret.setNodePath(adaptationFS.NodePath)
         ret.setRef(adaptationFS.Ref)
         let ref2 = match adaptationFS.Ref2 with
-            | Some(x) -> x
-            | None -> null
+                                            | Some(x) -> x
+                                            | None -> null
         ret.setRef2(ref2)
         ret
 
     let convert:AdaptationModelFS -> Org.Kevoree.Core.Api.Adaptation.AdaptationModel = fun adaptationModelfs ->
         let am = new AdaptationModel();
         for elem in adaptationModelfs do
-            am.Add(convertAdapt elem)
+            let _ = am.Add(convertAdapt elem)
+            ()
         am
 
 

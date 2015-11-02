@@ -19,7 +19,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <Tailcalls>false</Tailcalls>
-    <OutputPath>C:\Users\mleduc\Desktop\package_solution\org-kevoree-node\0.0.1\plugin</OutputPath>
+    <OutputPath>C:\Users\mleduc\Desktop\package_solution\Org.Kevoree.Library.DotnetNode\1.0.1\plugin</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -76,123 +76,123 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Annotation">
-      <HintPath>packages\org-kevoree-annotation.2.0.6\lib\net40\Annotation.dll</HintPath>
+      <HintPath>..\kevoree-dotnet-core-bootstrap\packages\org-kevoree-annotation.2.0.6\lib\net40\Annotation.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Core.Api">
-      <HintPath>packages\org-kevoree-api.1.4.0\lib\net45\Core.Api.dll</HintPath>
+      <HintPath>..\kevoree-dotnet-core-bootstrap\packages\org-kevoree-api.1.4.0\lib\net45\Core.Api.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="IKVM.AWT.WinForms">
-      <HintPath>packages\IKVM.7.2.4630.5\lib\IKVM.AWT.WinForms.dll</HintPath>
+      <HintPath>..\kevoree-dotnet-core-bootstrap\packages\IKVM.7.2.4630.5\lib\IKVM.AWT.WinForms.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="IKVM.OpenJDK.Beans">
-      <HintPath>packages\IKVM.7.2.4630.5\lib\IKVM.OpenJDK.Beans.dll</HintPath>
+      <HintPath>..\kevoree-dotnet-core-bootstrap\packages\IKVM.7.2.4630.5\lib\IKVM.OpenJDK.Beans.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="IKVM.OpenJDK.Charsets">
-      <HintPath>packages\IKVM.7.2.4630.5\lib\IKVM.OpenJDK.Charsets.dll</HintPath>
+      <HintPath>..\kevoree-dotnet-core-bootstrap\packages\IKVM.7.2.4630.5\lib\IKVM.OpenJDK.Charsets.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="IKVM.OpenJDK.Corba">
-      <HintPath>packages\IKVM.7.2.4630.5\lib\IKVM.OpenJDK.Corba.dll</HintPath>
+      <HintPath>..\kevoree-dotnet-core-bootstrap\packages\IKVM.7.2.4630.5\lib\IKVM.OpenJDK.Corba.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="IKVM.OpenJDK.Core">
-      <HintPath>packages\IKVM.7.2.4630.5\lib\IKVM.OpenJDK.Core.dll</HintPath>
+      <HintPath>..\kevoree-dotnet-core-bootstrap\packages\IKVM.7.2.4630.5\lib\IKVM.OpenJDK.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="IKVM.OpenJDK.Jdbc">
-      <HintPath>packages\IKVM.7.2.4630.5\lib\IKVM.OpenJDK.Jdbc.dll</HintPath>
+      <HintPath>..\kevoree-dotnet-core-bootstrap\packages\IKVM.7.2.4630.5\lib\IKVM.OpenJDK.Jdbc.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="IKVM.OpenJDK.Management">
-      <HintPath>packages\IKVM.7.2.4630.5\lib\IKVM.OpenJDK.Management.dll</HintPath>
+      <HintPath>..\kevoree-dotnet-core-bootstrap\packages\IKVM.7.2.4630.5\lib\IKVM.OpenJDK.Management.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="IKVM.OpenJDK.Media">
-      <HintPath>packages\IKVM.7.2.4630.5\lib\IKVM.OpenJDK.Media.dll</HintPath>
+      <HintPath>..\kevoree-dotnet-core-bootstrap\packages\IKVM.7.2.4630.5\lib\IKVM.OpenJDK.Media.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="IKVM.OpenJDK.Misc">
-      <HintPath>packages\IKVM.7.2.4630.5\lib\IKVM.OpenJDK.Misc.dll</HintPath>
+      <HintPath>..\kevoree-dotnet-core-bootstrap\packages\IKVM.7.2.4630.5\lib\IKVM.OpenJDK.Misc.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="IKVM.OpenJDK.Naming">
-      <HintPath>packages\IKVM.7.2.4630.5\lib\IKVM.OpenJDK.Naming.dll</HintPath>
+      <HintPath>..\kevoree-dotnet-core-bootstrap\packages\IKVM.7.2.4630.5\lib\IKVM.OpenJDK.Naming.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="IKVM.OpenJDK.Remoting">
-      <HintPath>packages\IKVM.7.2.4630.5\lib\IKVM.OpenJDK.Remoting.dll</HintPath>
+      <HintPath>..\kevoree-dotnet-core-bootstrap\packages\IKVM.7.2.4630.5\lib\IKVM.OpenJDK.Remoting.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="IKVM.OpenJDK.Security">
-      <HintPath>packages\IKVM.7.2.4630.5\lib\IKVM.OpenJDK.Security.dll</HintPath>
+      <HintPath>..\kevoree-dotnet-core-bootstrap\packages\IKVM.7.2.4630.5\lib\IKVM.OpenJDK.Security.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="IKVM.OpenJDK.SwingAWT">
-      <HintPath>packages\IKVM.7.2.4630.5\lib\IKVM.OpenJDK.SwingAWT.dll</HintPath>
+      <HintPath>..\kevoree-dotnet-core-bootstrap\packages\IKVM.7.2.4630.5\lib\IKVM.OpenJDK.SwingAWT.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="IKVM.OpenJDK.Text">
-      <HintPath>packages\IKVM.7.2.4630.5\lib\IKVM.OpenJDK.Text.dll</HintPath>
+      <HintPath>..\kevoree-dotnet-core-bootstrap\packages\IKVM.7.2.4630.5\lib\IKVM.OpenJDK.Text.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="IKVM.OpenJDK.Tools">
-      <HintPath>packages\IKVM.7.2.4630.5\lib\IKVM.OpenJDK.Tools.dll</HintPath>
+      <HintPath>..\kevoree-dotnet-core-bootstrap\packages\IKVM.7.2.4630.5\lib\IKVM.OpenJDK.Tools.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="IKVM.OpenJDK.Util">
-      <HintPath>packages\IKVM.7.2.4630.5\lib\IKVM.OpenJDK.Util.dll</HintPath>
+      <HintPath>..\kevoree-dotnet-core-bootstrap\packages\IKVM.7.2.4630.5\lib\IKVM.OpenJDK.Util.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="IKVM.OpenJDK.XML.API">
-      <HintPath>packages\IKVM.7.2.4630.5\lib\IKVM.OpenJDK.XML.API.dll</HintPath>
+      <HintPath>..\kevoree-dotnet-core-bootstrap\packages\IKVM.7.2.4630.5\lib\IKVM.OpenJDK.XML.API.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="IKVM.OpenJDK.XML.Bind">
-      <HintPath>packages\IKVM.7.2.4630.5\lib\IKVM.OpenJDK.XML.Bind.dll</HintPath>
+      <HintPath>..\kevoree-dotnet-core-bootstrap\packages\IKVM.7.2.4630.5\lib\IKVM.OpenJDK.XML.Bind.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="IKVM.OpenJDK.XML.Crypto">
-      <HintPath>packages\IKVM.7.2.4630.5\lib\IKVM.OpenJDK.XML.Crypto.dll</HintPath>
+      <HintPath>..\kevoree-dotnet-core-bootstrap\packages\IKVM.7.2.4630.5\lib\IKVM.OpenJDK.XML.Crypto.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="IKVM.OpenJDK.XML.Parse">
-      <HintPath>packages\IKVM.7.2.4630.5\lib\IKVM.OpenJDK.XML.Parse.dll</HintPath>
+      <HintPath>..\kevoree-dotnet-core-bootstrap\packages\IKVM.7.2.4630.5\lib\IKVM.OpenJDK.XML.Parse.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="IKVM.OpenJDK.XML.Transform">
-      <HintPath>packages\IKVM.7.2.4630.5\lib\IKVM.OpenJDK.XML.Transform.dll</HintPath>
+      <HintPath>..\kevoree-dotnet-core-bootstrap\packages\IKVM.7.2.4630.5\lib\IKVM.OpenJDK.XML.Transform.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="IKVM.OpenJDK.XML.WebServices">
-      <HintPath>packages\IKVM.7.2.4630.5\lib\IKVM.OpenJDK.XML.WebServices.dll</HintPath>
+      <HintPath>..\kevoree-dotnet-core-bootstrap\packages\IKVM.7.2.4630.5\lib\IKVM.OpenJDK.XML.WebServices.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="IKVM.OpenJDK.XML.XPath">
-      <HintPath>packages\IKVM.7.2.4630.5\lib\IKVM.OpenJDK.XML.XPath.dll</HintPath>
+      <HintPath>..\kevoree-dotnet-core-bootstrap\packages\IKVM.7.2.4630.5\lib\IKVM.OpenJDK.XML.XPath.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="IKVM.Runtime">
-      <HintPath>packages\IKVM.7.2.4630.5\lib\IKVM.Runtime.dll</HintPath>
+      <HintPath>..\kevoree-dotnet-core-bootstrap\packages\IKVM.7.2.4630.5\lib\IKVM.Runtime.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="IKVM.Runtime.JNI">
-      <HintPath>packages\IKVM.7.2.4630.5\lib\IKVM.Runtime.JNI.dll</HintPath>
+      <HintPath>..\kevoree-dotnet-core-bootstrap\packages\IKVM.7.2.4630.5\lib\IKVM.Runtime.JNI.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="kevoree-dotnet-lib-annotation">
-      <HintPath>packages\Org.Kevoree.Lib.Annnotation.1.0.0\lib\net40\kevoree-dotnet-lib-annotation.dll</HintPath>
+      <HintPath>..\kevoree-dotnet-core-bootstrap\packages\Org.Kevoree.Lib.Annnotation.1.0.0\lib\net40\kevoree-dotnet-lib-annotation.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="kevoree-dotnet-log-api">
-      <HintPath>packages\Org.Kevoree.Log.Api.1.0.0\lib\net40\kevoree-dotnet-log-api.dll</HintPath>
+      <HintPath>..\kevoree-dotnet-core-bootstrap\packages\Org.Kevoree.Log.Api.1.0.0\lib\net40\kevoree-dotnet-log-api.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="KevoreeModel">
-      <HintPath>packages\Org.Kevoree.Core.Model.5.2.7\lib\KevoreeModel.dll</HintPath>
+      <HintPath>..\kevoree-dotnet-core-bootstrap\packages\Org.Kevoree.Core.Model.5.2.7\lib\KevoreeModel.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="mscorlib" />
@@ -200,7 +200,11 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="nunit.framework">
-      <HintPath>packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
+      <HintPath>..\kevoree-dotnet-core-bootstrap\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Semver">
+      <HintPath>packages\semver.1.1.2\lib\net45\Semver.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
