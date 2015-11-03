@@ -80,7 +80,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Core.Api">
-      <HintPath>..\kevoree-dotnet-core-bootstrap\packages\org-kevoree-api.1.4.0\lib\net45\Core.Api.dll</HintPath>
+      <HintPath>packages\org-kevoree-api.1.6.1\lib\net40\Core.Api.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="IKVM.AWT.WinForms">
@@ -192,7 +192,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="KevoreeModel">
-      <HintPath>..\kevoree-dotnet-core-bootstrap\packages\Org.Kevoree.Core.Model.5.2.7\lib\KevoreeModel.dll</HintPath>
+      <HintPath>packages\Org.Kevoree.Core.Model.5.2.9\lib\KevoreeModel.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="mscorlib" />

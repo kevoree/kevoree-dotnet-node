@@ -1,0 +1,530 @@
+{
+    "class": "root:org.kevoree.ContainerRoot@287010561444906168396",
+    "generated_KMF_ID": "287010561444906168396",
+    "nodes": [
+        {
+            "class": "org.kevoree.ContainerNode@node0",
+            "name": "node0",
+            "started": "true",
+            "typeDefinition": [
+                "/packages[org]/packages[kevoree]/packages[library]/typeDefinitions[name=DotnetNode,version=0.0.1]"
+            ],
+            "hosts": [],
+            "host": [],
+            "groups": [
+                "/groups[group]"
+            ],
+            "dictionary": [
+                {
+                    "class": "org.kevoree.Dictionary@0.65375075535848741444211404864",
+                    "generated_KMF_ID": "0.65375075535848741444211404864",
+                    "values": [
+                        {
+                            "class": "org.kevoree.Value@log",
+                            "name": "log",
+                            "value": "INFO"
+                        }
+                    ]
+                }
+            ],
+            "fragmentDictionary": [],
+            "metaData": [
+                {
+                    "class": "org.kevoree.Value@kwe_position",
+                    "name": "kwe_position",
+                    "value": "{\"x\":34,\"y\":207}"
+                }
+            ],
+            "components": [
+                {
+                    "class": "org.kevoree.ComponentInstance@comp816",
+                    "name": "comp816",
+                    "started": "true",
+                    "typeDefinition": [
+                        "/packages[org]/packages[kevoree]/packages[library]/typeDefinitions[name=Ticker,version=5.2.10]"
+                    ],
+                    "dictionary": [
+                        {
+                            "class": "org.kevoree.Dictionary@0.532588436268271444906234914",
+                            "generated_KMF_ID": "0.532588436268271444906234914",
+                            "values": [
+                                {
+                                    "class": "org.kevoree.Value@random",
+                                    "name": "random",
+                                    "value": "false"
+                                },
+                                {
+                                    "class": "org.kevoree.Value@period",
+                                    "name": "period",
+                                    "value": "3000"
+                                }
+                            ]
+                        }
+                    ],
+                    "fragmentDictionary": [],
+                    "metaData": [
+                        {
+                            "class": "org.kevoree.Value@kwe_position",
+                            "name": "kwe_position",
+                            "value": "{\"x\":160,\"y\":222}"
+                        }
+                    ],
+                    "provided": [],
+                    "required": []
+                }
+            ],
+            "networkInformation": []
+        }
+    ],
+    "repositories": [],
+    "hubs": [],
+    "mBindings": [],
+    "groups": [
+        {
+            "class": "org.kevoree.Group@group",
+            "name": "group",
+            "started": "true",
+            "typeDefinition": [
+                "/packages[org]/packages[kevoree]/packages[library]/typeDefinitions[name=WSGroup,version=1.0.2]"
+            ],
+            "subNodes": [
+                "/nodes[node0]"
+            ],
+            "dictionary": [
+                {
+                    "class": "org.kevoree.Dictionary@0.86569740739651021444211397877",
+                    "generated_KMF_ID": "0.86569740739651021444211397877",
+                    "values": [
+                        {
+                            "class": "org.kevoree.Value@host",
+                            "name": "host",
+                            "value": ""
+                        }
+                    ]
+                }
+            ],
+            "fragmentDictionary": [],
+            "metaData": [
+                {
+                    "class": "org.kevoree.Value@kwe_position",
+                    "name": "kwe_position",
+                    "value": "{\"x\":100,\"y\":100}"
+                }
+            ]
+        }
+    ],
+    "packages": [
+        {
+            "class": "org.kevoree.Package@org",
+            "name": "org",
+            "packages": [
+                {
+                    "class": "org.kevoree.Package@jetbrains",
+                    "name": "jetbrains",
+                    "packages": [
+                        {
+                            "class": "org.kevoree.Package@kotlin",
+                            "name": "kotlin",
+                            "packages": [],
+                            "typeDefinitions": [],
+                            "deployUnits": [
+                                {
+                                    "class": "org.kevoree.DeployUnit@hashcode=,name=kotlin-runtime,version=0.8.11",
+                                    "name": "kotlin-runtime",
+                                    "hashcode": "",
+                                    "url": "",
+                                    "version": "0.8.11",
+                                    "requiredLibs": [],
+                                    "filters": [
+                                        {
+                                            "class": "org.kevoree.Value@platform",
+                                            "name": "platform",
+                                            "value": "java"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "class": "org.kevoree.DeployUnit@hashcode=,name=kotlin-stdlib,version=0.8.11",
+                                    "name": "kotlin-stdlib",
+                                    "hashcode": "",
+                                    "url": "",
+                                    "version": "0.8.11",
+                                    "requiredLibs": [
+                                        "/packages[org]/packages[jetbrains]/packages[kotlin]/deployUnits[hashcode=,name=kotlin-runtime,version=0.8.11]"
+                                    ],
+                                    "filters": [
+                                        {
+                                            "class": "org.kevoree.Value@platform",
+                                            "name": "platform",
+                                            "value": "java"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
+                    "typeDefinitions": [],
+                    "deployUnits": []
+                },
+                {
+                    "class": "org.kevoree.Package@kevoree",
+                    "name": "kevoree",
+                    "packages": [
+                        {
+                            "class": "org.kevoree.Package@log",
+                            "name": "log",
+                            "packages": [],
+                            "typeDefinitions": [],
+                            "deployUnits": [
+                                {
+                                    "class": "org.kevoree.DeployUnit@hashcode=,name=org.kevoree.log,version=1",
+                                    "name": "org.kevoree.log",
+                                    "hashcode": "",
+                                    "url": "",
+                                    "version": "1",
+                                    "requiredLibs": [],
+                                    "filters": [
+                                        {
+                                            "class": "org.kevoree.Value@platform",
+                                            "name": "platform",
+                                            "value": "java"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "class": "org.kevoree.Package@kcl",
+                            "name": "kcl",
+                            "packages": [],
+                            "typeDefinitions": [],
+                            "deployUnits": [
+                                {
+                                    "class": "org.kevoree.DeployUnit@hashcode=,name=org.kevoree.kcl,version=20",
+                                    "name": "org.kevoree.kcl",
+                                    "hashcode": "",
+                                    "url": "",
+                                    "version": "20",
+                                    "requiredLibs": [
+                                        "/packages[org]/packages[kevoree]/packages[log]/deployUnits[hashcode=,name=org.kevoree.log,version=1]"
+                                    ],
+                                    "filters": [
+                                        {
+                                            "class": "org.kevoree.Value@platform",
+                                            "name": "platform",
+                                            "value": "java"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "class": "org.kevoree.Package@library",
+                            "name": "library",
+                            "packages": [
+                                {
+                                    "class": "org.kevoree.Package@java",
+                                    "name": "java",
+                                    "packages": [],
+                                    "typeDefinitions": [],
+                                    "deployUnits": [
+                                        {
+                                            "class": "org.kevoree.DeployUnit@hashcode=,name=org.kevoree.library.java.toys,version=5.2.10",
+                                            "name": "org.kevoree.library.java.toys",
+                                            "hashcode": "",
+                                            "url": "",
+                                            "version": "5.2.10",
+                                            "requiredLibs": [
+                                                "/packages[org]/packages[kevoree]/packages[log]/deployUnits[hashcode=,name=org.kevoree.log,version=1]",
+                                                "/packages[org]/packages[kevoree]/deployUnits[hashcode=,name=org.kevoree.api,version=5.2.7]",
+                                                "/packages[org]/packages[kevoree]/deployUnits[hashcode=,name=org.kevoree.annotation.api,version=5.2.7]"
+                                            ],
+                                            "filters": [
+                                                {
+                                                    "class": "org.kevoree.Value@platform",
+                                                    "name": "platform",
+                                                    "value": "java"
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ],
+                            "typeDefinitions": [
+                                {
+                                    "class": "org.kevoree.ComponentType@name=Ticker,version=5.2.10",
+                                    "abstract": "false",
+                                    "name": "Ticker",
+                                    "version": "5.2.10",
+                                    "deployUnits": [
+                                        "/packages[org]/packages[kevoree]/packages[library]/deployUnits[hashcode=,name=kevoree-comp-ticker,version=5.2.10]",
+                                        "/packages[org]/packages[kevoree]/packages[library]/deployUnits[hashcode=,name=Ticker,version=5.2.10]",
+                                        "/packages[org]/packages[kevoree]/packages[library]/packages[java]/deployUnits[hashcode=,name=org.kevoree.library.java.toys,version=5.2.10]"
+                                    ],
+                                    "superTypes": [],
+                                    "dictionaryType": [
+                                        {
+                                            "class": "org.kevoree.DictionaryType@126728451444906168573",
+                                            "generated_KMF_ID": "126728451444906168573",
+                                            "attributes": [
+                                                {
+                                                    "class": "org.kevoree.DictionaryAttribute@random",
+                                                    "fragmentDependant": "false",
+                                                    "optional": "true",
+                                                    "name": "random",
+                                                    "state": "false",
+                                                    "datatype": "BOOLEAN",
+                                                    "defaultValue": "false",
+                                                    "genericTypes": []
+                                                },
+                                                {
+                                                    "class": "org.kevoree.DictionaryAttribute@period",
+                                                    "fragmentDependant": "false",
+                                                    "optional": "true",
+                                                    "name": "period",
+                                                    "state": "false",
+                                                    "datatype": "LONG",
+                                                    "defaultValue": "3000",
+                                                    "genericTypes": []
+                                                }
+                                            ]
+                                        }
+                                    ],
+                                    "metaData": [
+                                        {
+                                            "class": "org.kevoree.Value@description",
+                                            "name": "description",
+                                            "value": "A Kevoree component that sends a 'tick' message at user-defined intervals"
+                                        },
+                                        {
+                                            "class": "org.kevoree.Value@java.class",
+                                            "name": "java.class",
+                                            "value": "org.kevoree.library.Ticker"
+                                        }
+                                    ],
+                                    "required": [
+                                        {
+                                            "class": "org.kevoree.PortTypeRef@tick",
+                                            "noDependency": "false",
+                                            "optional": "true",
+                                            "name": "tick",
+                                            "ref": [],
+                                            "mappings": []
+                                        }
+                                    ],
+                                    "provided": []
+                                },
+                                {
+                                    "class": "org.kevoree.NodeType@name=DotnetNode,version=0.0.1",
+                                    "abstract": "false",
+                                    "name": "DotnetNode",
+                                    "version": "0.0.1",
+                                    "deployUnits": [
+                                        "/packages[org]/packages[kevoree]/packages[library]/deployUnits[hashcode=,name=org-kevoree-node,version=0.0.1]"
+                                    ],
+                                    "superTypes": [],
+                                    "dictionaryType": [
+                                        {
+                                            "class": "org.kevoree.DictionaryType@129177781443510178877",
+                                            "generated_KMF_ID": "129177781443510178877",
+                                            "attributes": [
+                                                {
+                                                    "class": "org.kevoree.DictionaryAttribute@log",
+                                                    "fragmentDependant": "false",
+                                                    "optional": "true",
+                                                    "name": "log",
+                                                    "state": "false",
+                                                    "datatype": "STRING",
+                                                    "defaultValue": "INFO",
+                                                    "genericTypes": []
+                                                }
+                                            ]
+                                        }
+                                    ],
+                                    "metaData": []
+                                },
+                                {
+                                    "class": "org.kevoree.GroupType@name=WSGroup,version=1.0.2",
+                                    "abstract": "false",
+                                    "name": "WSGroup",
+                                    "version": "1.0.2",
+                                    "deployUnits": [
+                                        "/packages[org]/packages[kevoree]/packages[library]/deployUnits[hashcode=,name=org-kevoree-group-remotews,version=1.0.2]"
+                                    ],
+                                    "superTypes": [],
+                                    "dictionaryType": [
+                                        {
+                                            "class": "org.kevoree.DictionaryType@475831301443510369574",
+                                            "generated_KMF_ID": "475831301443510369574",
+                                            "attributes": [
+                                                {
+                                                    "class": "org.kevoree.DictionaryAttribute@path",
+                                                    "fragmentDependant": "false",
+                                                    "optional": "true",
+                                                    "name": "path",
+                                                    "state": "false",
+                                                    "datatype": "STRING",
+                                                    "defaultValue": "/",
+                                                    "genericTypes": []
+                                                },
+                                                {
+                                                    "class": "org.kevoree.DictionaryAttribute@port",
+                                                    "fragmentDependant": "false",
+                                                    "optional": "true",
+                                                    "name": "port",
+                                                    "state": "false",
+                                                    "datatype": "INT",
+                                                    "defaultValue": "80",
+                                                    "genericTypes": []
+                                                },
+                                                {
+                                                    "class": "org.kevoree.DictionaryAttribute@host",
+                                                    "fragmentDependant": "false",
+                                                    "optional": "false",
+                                                    "name": "host",
+                                                    "state": "false",
+                                                    "datatype": "STRING",
+                                                    "defaultValue": "",
+                                                    "genericTypes": []
+                                                },
+                                                {
+                                                    "class": "org.kevoree.DictionaryAttribute@answerPull",
+                                                    "fragmentDependant": "true",
+                                                    "optional": "false",
+                                                    "name": "answerPull",
+                                                    "state": "false",
+                                                    "datatype": "BOOLEAN",
+                                                    "defaultValue": "true",
+                                                    "genericTypes": []
+                                                }
+                                            ]
+                                        }
+                                    ],
+                                    "metaData": []
+                                }
+                            ],
+                            "deployUnits": [
+                                {
+                                    "class": "org.kevoree.DeployUnit@hashcode=,name=kevoree-comp-ticker,version=5.2.10",
+                                    "name": "kevoree-comp-ticker",
+                                    "hashcode": "",
+                                    "url": "",
+                                    "version": "5.2.10",
+                                    "requiredLibs": [],
+                                    "filters": [
+                                        {
+                                            "class": "org.kevoree.Value@platform",
+                                            "name": "platform",
+                                            "value": "javascript"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "class": "org.kevoree.DeployUnit@hashcode=,name=Ticker,version=5.2.10",
+                                    "name": "Ticker",
+                                    "hashcode": "",
+                                    "url": "",
+                                    "version": "5.2.10",
+                                    "requiredLibs": [],
+                                    "filters": [
+                                        {
+                                            "class": "org.kevoree.Value@platform",
+                                            "name": "platform",
+                                            "value": "dotnet"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "class": "org.kevoree.DeployUnit@hashcode=,name=org-kevoree-node,version=0.0.1",
+                                    "name": "org-kevoree-node",
+                                    "hashcode": "",
+                                    "url": "",
+                                    "version": "0.0.1",
+                                    "requiredLibs": [],
+                                    "filters": [
+                                        {
+                                            "class": "org.kevoree.Value@platform",
+                                            "name": "platform",
+                                            "value": "dotnet"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "class": "org.kevoree.DeployUnit@hashcode=,name=org-kevoree-group-remotews,version=1.0.2",
+                                    "name": "org-kevoree-group-remotews",
+                                    "hashcode": "",
+                                    "url": "",
+                                    "version": "1.0.2",
+                                    "requiredLibs": [],
+                                    "filters": [
+                                        {
+                                            "class": "org.kevoree.Value@platform",
+                                            "name": "platform",
+                                            "value": "dotnet"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
+                    "typeDefinitions": [],
+                    "deployUnits": [
+                        {
+                            "class": "org.kevoree.DeployUnit@hashcode=,name=org.kevoree.api,version=5.2.7",
+                            "name": "org.kevoree.api",
+                            "hashcode": "",
+                            "url": "",
+                            "version": "5.2.7",
+                            "requiredLibs": [
+                                "/packages[org]/packages[kevoree]/packages[kcl]/deployUnits[hashcode=,name=org.kevoree.kcl,version=20]",
+                                "/packages[org]/packages[kevoree]/deployUnits[hashcode=,name=org.kevoree.model,version=5.2.7]",
+                                "/packages[org]/packages[jetbrains]/packages[kotlin]/deployUnits[hashcode=,name=kotlin-stdlib,version=0.8.11]"
+                            ],
+                            "filters": [
+                                {
+                                    "class": "org.kevoree.Value@platform",
+                                    "name": "platform",
+                                    "value": "java"
+                                }
+                            ]
+                        },
+                        {
+                            "class": "org.kevoree.DeployUnit@hashcode=,name=org.kevoree.model,version=5.2.7",
+                            "name": "org.kevoree.model",
+                            "hashcode": "",
+                            "url": "",
+                            "version": "5.2.7",
+                            "requiredLibs": [
+                                "/packages[org]/packages[jetbrains]/packages[kotlin]/deployUnits[hashcode=,name=kotlin-stdlib,version=0.8.11]"
+                            ],
+                            "filters": [
+                                {
+                                    "class": "org.kevoree.Value@platform",
+                                    "name": "platform",
+                                    "value": "java"
+                                }
+                            ]
+                        },
+                        {
+                            "class": "org.kevoree.DeployUnit@hashcode=,name=org.kevoree.annotation.api,version=5.2.7",
+                            "name": "org.kevoree.annotation.api",
+                            "hashcode": "",
+                            "url": "",
+                            "version": "5.2.7",
+                            "requiredLibs": [],
+                            "filters": [
+                                {
+                                    "class": "org.kevoree.Value@platform",
+                                    "name": "platform",
+                                    "value": "java"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "typeDefinitions": [],
+            "deployUnits": []
+        }
+    ]
+}

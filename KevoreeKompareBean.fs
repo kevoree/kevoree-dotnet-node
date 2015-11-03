@@ -52,7 +52,7 @@ module KevoreeKompareBean =
                 set [ {  Type =  AdaptationType.AddInstance;  NodePath = context.TargetNode.path(); Ref = ref; Ref2 = None }  ]
             elif trace.isOfType(typedefof<ModelRemoveTrace>) then
                 let removedObjetPath = trace.getModelRemoveTrace().getObjPath()
-                set [ { Type =  AdaptationType.RemoveInstance;  NodePath = removedObjetPath; Ref = context.TargetModel.findByPath(removedObjetPath); Ref2 = None }; {  Type =  AdaptationType.StopInstance;  NodePath = removedObjetPath; Ref = context.TargetModel.findByPath(removedObjetPath); Ref2 = None }  ]
+                set [ { Type =  AdaptationType.RemoveInstance;  NodePath = removedObjetPath; Ref = context.CurrentModel.findByPath(removedObjetPath); Ref2 = None }; {  Type =  AdaptationType.StopInstance;  NodePath = removedObjetPath; Ref = context.CurrentModel.findByPath(removedObjetPath); Ref2 = None }  ]
             else set []
         else set []
 
