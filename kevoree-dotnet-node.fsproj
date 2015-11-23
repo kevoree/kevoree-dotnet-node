@@ -80,7 +80,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Core.Api">
-      <HintPath>packages\org-kevoree-api.1.6.1\lib\net40\Core.Api.dll</HintPath>
+      <HintPath>packages\org-kevoree-api.1.7.0\lib\net40\Core.Api.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="IKVM.AWT.WinForms">
@@ -208,6 +208,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics" />
   </ItemGroup>

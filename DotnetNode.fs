@@ -8,8 +8,10 @@ open org.kevoree
 open org.kevoree.factory
 open Org.Kevoree.Library.KevoreeKompareBean
 open Org.Kevoree.Core.Api.IMarshalled
+open System.ComponentModel.Composition
 
 [<Org.Kevoree.Annotation.NodeType>]
+[<Export(typedefof< Org.Kevoree.Annotation.DeployUnit>)>]
 type DotnetNode =
     class
         [<KevoreeInject>] val mutable modelService:ModelService

@@ -16,6 +16,7 @@ type AddInstanceCommand(c:IInstanceMarshalled, nodeName:string, registryManager:
             if not (registryManager.Lookup path) then 
                 let a = c.GetTypeDefinition().getDeployUnits().FindAll(fun x -> x.findFiltersByID("platform").getValue() = "dotnet")
                 a.Sort(fun a b -> Semver.SemVersion.Parse(a.getVersion()).CompareTo(Semver.SemVersion.Parse(b.getVersion())))
+                a.Reverse()
                 let du:IDeployUnitMarshalled = a.[0]
                 logger.Debug(du.getVersion() + " selected")
                 let version = du.getVersion()

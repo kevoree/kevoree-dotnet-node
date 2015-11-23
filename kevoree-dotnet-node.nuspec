@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>Org.Kevoree.Library.DotnetNode</id>
-    <version>1.0.2</version>
+    <version>1.0.4</version>
     <title>DotnetNode</title>
     <authors>Manuel Leduc</authors>
     <owners>Kevoree</owners>
@@ -21,7 +21,7 @@
       <dependency id="Org.Kevoree.Lib.Annnotation" version="1.0.0" />
       <dependency id="Org.Kevoree.Log.Api" version="1.0.0" />
       <dependency id="org-kevoree-annotation" version="2.0.6" />
-      <dependency id="org-kevoree-api" version="1.6.1" />
+      <dependency id="org-kevoree-api" version="1.7.0" />
       <dependency id="semver" version="1.1.2" />
     </dependencies>
   </metadata>
